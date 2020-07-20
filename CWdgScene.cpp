@@ -24,16 +24,7 @@ CWdgScene::CWdgScene(QWidget* parent)
 
 void CWdgScene::AddElementToScene()
 {
-	auto recIntem = m_scene->addRect(0, 0, gridStep, gridStep,QPen(Qt::black), QBrush(Qt::red));
-	recIntem->setFlag(QGraphicsItem::ItemIsMovable);
-}
-
-bool CWdgScene::eventFilter(QObject *watched, QEvent *event)
-{
-	if ((watched == m_view) && (event->type() == QEvent::Resize))
-		m_item->setRect(m_view->viewport()->rect().adjusted(5, 5, -5, -5));
-
-	return QWidget::eventFilter(watched, event);
+	m_scene->addItem(new CGraphicsItem(QRect(0, 0, gridStep, gridStep), Qt::red));
 }
 
 void CWdgScene::AddGridToScene()
