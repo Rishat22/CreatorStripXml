@@ -1,18 +1,21 @@
 #ifndef CWDGSELECTIONMENU_H
 #define CWDGSELECTIONMENU_H
-
+#include <QBoxLayout>
 #include <QWidget>
 
 class CWdgSelectionMenu : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CWdgSelectionMenu(QWidget *parent = nullptr);
-
+    CWdgSelectionMenu(QWidget *parent = nullptr);
 signals:
-    void AddElementToScene();
+    void addElementToScene();
 private:
-    void AddCreateElementsButton(QLayout* layoutToInsert);
+    QStringList& fillTypeItemsFilst();
+    void addComboBoxWithTypeItems(const QStringList& typeItemsList, QBoxLayout* layoutToInsert);
+    void addCreateElementsButton(QBoxLayout* layoutToInsert);
+private:
+    QStringList m_typeItemsList;
 };
 
 #endif // CWDGSELECTIONMENU_H
