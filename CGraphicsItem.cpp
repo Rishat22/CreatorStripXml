@@ -30,9 +30,19 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 			&& (event->pos().y() < boundingRect().bottom() + adjustMouseResize)
 			&& (event->pos().y() > boundingRect().bottom() - adjustMouseResize) )
 	{
-		m_resizeMode = ResizeMode::bottom;
 		m_isMoveMode = false;
+		m_resizeMode = ResizeMode::bottom;
 		setCursor(QCursor(Qt::SizeVerCursor));
+	}
+	else if((event->pos().x() > boundingRect().right() - adjustMouseResize)
+			&& (event->pos().x() < boundingRect().right() + adjustMouseResize)
+			&& (event->pos().y() < boundingRect().bottom() - adjustMouseResize)
+			&& (event->pos().y() > boundingRect().top() + adjustMouseResize))
+	{
+		m_isMoveMode = false;
+		m_resizeMode = ResizeMode::right;
+		setCursor(QCursor(Qt::SizeHorCursor));
+
 	}
 	else
 	{
@@ -64,8 +74,14 @@ void CGraphicsItem::resizeItem(QGraphicsSceneMouseEvent* event)
 		prepareGeometryChange();
 		const auto newHeight = boundingRect().height() + event->scenePos().y() - m_initPos.y();
 		m_itemRect.setHeight(GlobalSettings::modulusOfStep(newHeight));
-		setCursor(QCursor(Qt::ArrowCursor));
 	}
+	else if(m_resizeMode == ResizeMode::right)
+	{
+		prepareGeometryChange();
+		const auto newWidth = boundingRect().width() + event->scenePos().x() - m_initPos.x();
+		m_itemRect.setWidth(GlobalSettings::modulusOfStep(newWidth));
+	}
+	setCursor(QCursor(Qt::ArrowCursor));
 }
 
 void CGraphicsItem::moveItem(QGraphicsSceneMouseEvent* event)
