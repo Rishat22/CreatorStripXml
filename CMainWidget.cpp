@@ -12,7 +12,7 @@ CMainWidget::CMainWidget(QWidget *parent)
 	ui->horizontalLayout->addWidget(wdgScene);
 	CWdgSelectionMenu* wdgSelectionMenu = new CWdgSelectionMenu;
 	ui->horizontalLayout->addWidget(wdgSelectionMenu);
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::AddElementToScene, wdgScene, &CWdgScene::AddElementToScene);
+	connect(wdgSelectionMenu, &CWdgSelectionMenu::AddElementToScene, wdgScene, &CWdgScene::addElementToScene);
 }
 
 CMainWidget::~CMainWidget()

@@ -20,25 +20,58 @@ CWdgScene::CWdgScene(QWidget* parent)
 	setContentsMargins(0, 0, 0, 0);
 	setFixedSize(660, 660);
 	setLayout(hBoxLayout);
-	AddGridToScene();
+	addGridToScene();
+	fillMatrixItemPos();
+
 }
 
-void CWdgScene::AddElementToScene()
+void CWdgScene::addGridToScene()
 {
-	m_scene->addItem(new CGraphicsItem(QRect(0, 0, GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red));
-}
-
-void CWdgScene::AddGridToScene()
-{
+	// Add the vertical lines
 	const auto viewWidth = m_view->sceneRect().width();
-	// Add the vertical lines first, paint them red
 	for (int posXLine = 0; posXLine <= viewWidth; posXLine += GlobalSettings::itemStep())
+	{
 		m_scene->addLine(posXLine, 0, posXLine, viewWidth, QPen(Qt::black));
-
-	const auto viewHeight = m_view->sceneRect().width();
-	// Now add the horizontal lines, paint them green
+	}
+	// Add the horizontal lines
+	const auto viewHeight = m_view->sceneRect().height();
 	for (int posYLine = 0; posYLine <= viewHeight; posYLine += GlobalSettings::itemStep())
+	{
 		m_scene->addLine(0, posYLine, viewHeight, posYLine, QPen(Qt::black));
+	}
 
 }
 
+void CWdgScene::fillMatrixItemPos()
+{
+	m_matrixPosOfItem.reserve(maxItemCount);
+	auto posYOfItem = 0;
+	auto rowIndex = 0;
+	while(posYOfItem < m_view->sceneRect().width())
+	{
+		auto posXOfItem = 0;
+		std::vector<QPoint> columns;
+		columns.reserve(maxItemCount);
+		m_matrixPosOfItem.push_back(std::move(columns));
+		while(posXOfItem < m_view->sceneRect().width())
+		{
+			m_matrixPosOfItem[rowIndex].push_back(QPoint(posXOfItem, posYOfItem));
+			posXOfItem += GlobalSettings::itemStep();
+		}
+		posYOfItem += GlobalSettings::itemStep();
+		rowIndex ++;
+	}
+}
+
+void CWdgScene::addElementToScene()
+{
+	const auto centerPoint = getCenterPoint();
+	m_scene->addItem(new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
+											 GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red));
+}
+
+QPoint CWdgScene::getCenterPoint()
+{
+	const auto& centerRow = m_matrixPosOfItem[m_matrixPosOfItem.size()/2];
+	return centerRow[centerRow.size()/2];
+}

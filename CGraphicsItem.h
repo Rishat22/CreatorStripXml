@@ -3,7 +3,7 @@
 #include <QGraphicsItem>
 #include <QBrush>
 
-constexpr size_t adjustMouseResize = 5;
+constexpr size_t adjustMouseResize = 8;
 enum class ResizeMode
 {
     top,

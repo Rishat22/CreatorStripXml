@@ -6,6 +6,8 @@
 #include <QGraphicsScene>
 #include <vector>
 
+constexpr size_t maxItemCount = 50;
+
 class CWdgScene : public QWidget
 {
     Q_OBJECT
@@ -14,14 +16,15 @@ public:
 signals:
 
 public slots:
-	void AddElementToScene();
+	void addElementToScene();
 private:
-    void AddGridToScene();
-
+	void addGridToScene();
+	void fillMatrixItemPos();
+	QPoint getCenterPoint();
 private:
     QGraphicsScene* m_scene;
     QGraphicsView* m_view;
-
+	std::vector<std::vector<QPoint>> m_matrixPosOfItem;
 };
 
 #endif // CWDGTOWIN_H
