@@ -34,6 +34,7 @@ if(ANDROID)
     CMainWidget.h
     CWdgScene.h
     CWdgSelectionMenu.h
+    GlobalSettings.h
     cmainwidget.ui
     ${TS_FILES}
   )
@@ -44,6 +45,7 @@ else()
     CMainWidget.cpp
     CWdgScene.cpp
     CWdgSelectionMenu.cpp
+    GlobalSettings.cpp
     cmainwidget.ui
     ${TS_FILES}
   )

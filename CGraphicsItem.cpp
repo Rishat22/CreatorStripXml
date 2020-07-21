@@ -1,14 +1,14 @@
-#include "CGraphicsItem.h"
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QDebug>
+#include "GlobalSettings.h"
+#include "CGraphicsItem.h"
 
 CGraphicsItem::CGraphicsItem(const QRect& size, const QColor color)
 	: m_itemRect(size),
 	  m_itemBrush(color)
 {
-	itemStep = size.width();
 	setFlag(QGraphicsItem::ItemIsMovable);
 }
 
@@ -30,7 +30,6 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 			&& (event->pos().y() < boundingRect().bottom() + adjustMouseResize)
 			&& (event->pos().y() > boundingRect().bottom() - adjustMouseResize) )
 	{
-		m_initPos = event->scenePos().y();
 		m_resizeMode = ResizeMode::bottom;
 		m_isMoveMode = false;
 		setCursor(QCursor(Qt::SizeVerCursor));
@@ -39,6 +38,7 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	{
 		m_isMoveMode = true;
 	}
+	m_initPos = event->scenePos();
 	update();
 	QGraphicsItem::mousePressEvent(event);
 }
@@ -62,21 +62,16 @@ void CGraphicsItem::resizeItem(QGraphicsSceneMouseEvent* event)
 	if(m_resizeMode == ResizeMode::bottom)
 	{
 		prepareGeometryChange();
-		const auto newHeight = boundingRect().height() + event->scenePos().y() - m_initPos;
-		m_itemRect.setHeight(modulusOfStep(newHeight));
+		const auto newHeight = boundingRect().height() + event->scenePos().y() - m_initPos.y();
+		m_itemRect.setHeight(GlobalSettings::modulusOfStep(newHeight));
 		setCursor(QCursor(Qt::ArrowCursor));
 	}
 }
 
 void CGraphicsItem::moveItem(QGraphicsSceneMouseEvent* event)
 {
-	setPos(modulusOfStep(event->scenePos().x()),
-		   modulusOfStep(event->scenePos().y()));
-}
-
-size_t CGraphicsItem::modulusOfStep(const size_t value)
-{
-	return static_cast<size_t>(value / itemStep) * itemStep;
+	setPos(GlobalSettings::modulusOfStep(event->scenePos().x()) - GlobalSettings::modulusOfStep(event->pos().x()),
+		   GlobalSettings::modulusOfStep(event->scenePos().y()) - GlobalSettings::modulusOfStep(event->pos().y()));
 }
 
 void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)

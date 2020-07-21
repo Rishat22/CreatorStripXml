@@ -6,8 +6,6 @@
 #include <QGraphicsScene>
 #include <vector>
 
-constexpr auto gridStep = 50;
-
 class CWdgScene : public QWidget
 {
     Q_OBJECT

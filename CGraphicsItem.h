@@ -29,14 +29,12 @@ protected:
 private:
     void resizeItem(QGraphicsSceneMouseEvent* event);
     void moveItem(QGraphicsSceneMouseEvent* event);
-    size_t modulusOfStep(const size_t value);
 private:
     QRectF m_itemRect;
     QBrush m_itemBrush;
     ResizeMode m_resizeMode;
     bool m_isMoveMode;
-    size_t m_initPos;
-    size_t itemStep;
+    QPointF m_initPos;
 };
 
 #endif // CGRAPHICSITEM_H

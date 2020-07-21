@@ -1,8 +1,9 @@
-#include "CWdgScene.h"
 #include <QHBoxLayout>
 #include <CGraphicsItem.h>
 #include <QEvent>
 #include <QDebug>
+#include "GlobalSettings.h"
+#include "CWdgScene.h"
 
 CWdgScene::CWdgScene(QWidget* parent)
 	: QWidget(parent)
@@ -24,19 +25,19 @@ CWdgScene::CWdgScene(QWidget* parent)
 
 void CWdgScene::AddElementToScene()
 {
-	m_scene->addItem(new CGraphicsItem(QRect(0, 0, gridStep, gridStep), Qt::red));
+	m_scene->addItem(new CGraphicsItem(QRect(0, 0, GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red));
 }
 
 void CWdgScene::AddGridToScene()
 {
 	const auto viewWidth = m_view->sceneRect().width();
 	// Add the vertical lines first, paint them red
-	for (int posXLine = 0; posXLine <= viewWidth; posXLine += gridStep)
+	for (int posXLine = 0; posXLine <= viewWidth; posXLine += GlobalSettings::itemStep())
 		m_scene->addLine(posXLine, 0, posXLine, viewWidth, QPen(Qt::black));
 
 	const auto viewHeight = m_view->sceneRect().width();
 	// Now add the horizontal lines, paint them green
-	for (int posYLine = 0; posYLine <= viewHeight; posYLine += gridStep)
+	for (int posYLine = 0; posYLine <= viewHeight; posYLine += GlobalSettings::itemStep())
 		m_scene->addLine(0, posYLine, viewHeight, posYLine, QPen(Qt::black));
 
 }
