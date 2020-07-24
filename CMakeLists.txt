@@ -35,6 +35,10 @@ if(ANDROID)
     CWdgScene.h
     CWdgSelectionMenu.h
     GlobalSettings.h
+    Galaxy/CItemInfoGetter.h
+    Galaxy/CStripItem.h
+    Galaxy/CBaseFieldItem.h
+    Galaxy/CActionItem.h
     cmainwidget.ui
     ${TS_FILES}
   )
@@ -46,6 +50,10 @@ else()
     CWdgScene.cpp
     CWdgSelectionMenu.cpp
     GlobalSettings.cpp
+    Galaxy/CItemInfoGetter.cpp
+    Galaxy/CStripItem.cpp
+    Galaxy/CBaseFieldItem.cpp
+    Galaxy/CActionItem.cpp
     cmainwidget.ui
     ${TS_FILES}
   )

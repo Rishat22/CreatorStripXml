@@ -1,43 +1,76 @@
 #include <QPushButton>
-#include <QComboBox>
 #include <QCompleter>
-#include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <Galaxy/CItemInfoGetter.h>
 #include "CWdgSelectionMenu.h"
 
 CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	: QWidget(parent)
 {
 	auto vBoxLayout = new QVBoxLayout;
-	const auto typeItemsList = fillTypeItemsFilst();
-	addComboBoxWithTypeItems(typeItemsList, vBoxLayout);
+
+	fillTypeItemsList();
+	auto itemNamesBoxLayout = createComboBoxWithDescription(m_typeItemsList, "Select the item type:");
+	fillActionNamesList();
+	auto actionsBoxLayout = createComboBoxWithDescription(m_actionNamesList, "Select the action names:");
+
+	vBoxLayout->addLayout(itemNamesBoxLayout);
+	vBoxLayout->addLayout(actionsBoxLayout);
+	vBoxLayout->addStretch();
 	addCreateElementsButton(vBoxLayout);
-	vBoxLayout->setContentsMargins(0, 0, 0, 0);
 	setLayout(vBoxLayout);
 }
 
-QStringList& CWdgSelectionMenu::fillTypeItemsFilst()
+void CWdgSelectionMenu::fillTypeItemsList()
 {
-	m_typeItemsList << "One" << "two" << "three" << "four" << "five";
-	return m_typeItemsList;
+	CItemInfoGetter itemInfoGetter;
+	auto listWithTypeNames = itemInfoGetter.getListWithTypeNames();
+	fillStringListByVector(m_typeItemsList, listWithTypeNames);
 }
 
-void CWdgSelectionMenu::addComboBoxWithTypeItems(const QStringList& typeItemsList, QBoxLayout* layoutToInsert)
+void CWdgSelectionMenu::fillActionNamesList()
 {
-	auto vBoxLayout = new QVBoxLayout;
+	CItemInfoGetter itemInfoGetter;
+	auto listWithTypeNames = itemInfoGetter.getListWithActionNames();
+	fillStringListByVector(m_actionNamesList, listWithTypeNames);
+}
+
+void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet)
+{
+	for(auto& typeNames : vecFromGet)
+	{
+		listToFill.push_back(QString::fromStdString(std::move(typeNames)));
+	}
+}
+
+QLayout* CWdgSelectionMenu::createComboBoxWithDescription(const QStringList& typeItemsList, const std::string& textDescription)
+{
+	auto comboBoxLayout = new QVBoxLayout;
+	comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
+	auto descriptionLabel = createDescription(textDescription);
+	comboBoxLayout->addWidget(descriptionLabel);
+	auto comboBox = createComboBox(typeItemsList);
+	comboBoxLayout->addWidget(comboBox);
+	return comboBoxLayout;
+}
+
+QLabel* CWdgSelectionMenu::createDescription(const std::string& textDescriptions)
+{
+	QLabel* descriptionLabel = new QLabel(QString::fromStdString(textDescriptions));
+	descriptionLabel->setFixedHeight(50);
+	return descriptionLabel;
+}
+
+QComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
+{
 	QCompleter* completer = new QCompleter(typeItemsList, this);
 	completer->setCaseSensitivity(Qt::CaseInsensitive);
 	auto comboBox = new QComboBox();
 	comboBox->addItems(typeItemsList);
 	comboBox->setEditable(true);
 	comboBox->setCompleter(completer);
-	const auto textExplanations = new QLabel("Select the item type:");
-	textExplanations->setFixedHeight(50);
-	vBoxLayout->addWidget(textExplanations);
-	vBoxLayout->addWidget(comboBox);
-	vBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
-	layoutToInsert->addLayout(vBoxLayout);
+	return comboBox;
 }
 void CWdgSelectionMenu::addCreateElementsButton(QBoxLayout* layoutToInsert)
 {

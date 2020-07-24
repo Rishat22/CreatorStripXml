@@ -1,6 +1,8 @@
 #ifndef CWDGSELECTIONMENU_H
 #define CWDGSELECTIONMENU_H
 #include <QBoxLayout>
+#include <QComboBox>
+#include <QLabel>
 #include <QWidget>
 
 class CWdgSelectionMenu : public QWidget
@@ -11,11 +13,16 @@ public:
 signals:
     void addElementToScene();
 private:
-    QStringList& fillTypeItemsFilst();
-    void addComboBoxWithTypeItems(const QStringList& typeItemsList, QBoxLayout* layoutToInsert);
+	void fillTypeItemsList();
+	void fillActionNamesList();
+	void fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet);
+	QLayout* createComboBoxWithDescription(const QStringList& typeItemsList, const std::string& textDescription);
+	QComboBox* createComboBox(const QStringList& typeItemsList);
+	QLabel* createDescription(const std::string& textDescription);
     void addCreateElementsButton(QBoxLayout* layoutToInsert);
 private:
-    QStringList m_typeItemsList;
+	QStringList m_typeItemsList;
+	QStringList m_actionNamesList;
 };
 
 #endif // CWDGSELECTIONMENU_H
