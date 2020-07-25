@@ -1,8 +1,7 @@
 #ifndef CWDGSELECTIONMENU_H
 #define CWDGSELECTIONMENU_H
-#include <QBoxLayout>
-#include <QComboBox>
-#include <QLabel>
+
+#include <StableDeclaration.h>
 #include <QWidget>
 
 class CWdgSelectionMenu : public QWidget

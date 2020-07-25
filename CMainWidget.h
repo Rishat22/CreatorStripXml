@@ -2,7 +2,6 @@
 #define CMAINWIDGET_H
 
 #include <QWidget>
-#include <QGraphicsView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CMainWidget; }

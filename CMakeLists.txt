@@ -35,6 +35,7 @@ if(ANDROID)
     CWdgScene.h
     CWdgSelectionMenu.h
     GlobalSettings.h
+    StableDeclaration.h
     Galaxy/CItemInfoGetter.h
     Galaxy/CStripItem.h
     Galaxy/CBaseFieldItem.h

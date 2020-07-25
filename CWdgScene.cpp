@@ -1,6 +1,7 @@
 #include <QHBoxLayout>
 #include <CGraphicsItem.h>
-#include <QEvent>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QDebug>
 #include "GlobalSettings.h"
 #include "CWdgScene.h"

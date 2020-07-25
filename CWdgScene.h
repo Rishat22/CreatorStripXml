@@ -1,9 +1,8 @@
 #ifndef CWDGTOWIN_H
 #define CWDGTOWIN_H
 
+#include <StableDeclaration.h>
 #include <QWidget>
-#include <QGraphicsView>
-#include <QGraphicsScene>
 #include <vector>
 
 constexpr size_t maxItemCount = 50;

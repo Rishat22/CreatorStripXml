@@ -1,7 +1,8 @@
 #include <QPushButton>
 #include <QCompleter>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QComboBox>
+#include <QLabel>
 #include <Galaxy/CItemInfoGetter.h>
 #include "CWdgSelectionMenu.h"
 
