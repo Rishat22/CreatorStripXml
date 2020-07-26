@@ -11,10 +11,9 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 {
 	auto vBoxLayout = new QVBoxLayout;
 
-	fillTypeItemsList();
-	auto itemNamesBoxLayout = createComboBoxWithDescription(m_typeItemsList, "Select the item type:");
-	fillActionNamesList();
-	auto actionsBoxLayout = createComboBoxWithDescription(m_actionNamesList, "Select the action names:");
+
+    auto itemNamesBoxLayout = createComboBox(StripItemParam::Name, "Select the item type:");
+    auto actionsBoxLayout = createComboBox(StripItemParam::Action, "Select the action names:");
 
 	vBoxLayout->addLayout(itemNamesBoxLayout);
 	vBoxLayout->addLayout(actionsBoxLayout);
@@ -23,18 +22,42 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	setLayout(vBoxLayout);
 }
 
-void CWdgSelectionMenu::fillTypeItemsList()
+QLayout* CWdgSelectionMenu::createComboBox(const StripItemParam typeParam, const QString& textDescription)
 {
-	CItemInfoGetter itemInfoGetter;
-	auto listWithTypeNames = itemInfoGetter.getListWithTypeNames();
-	fillStringListByVector(m_typeItemsList, listWithTypeNames);
+    auto comboBoxLayout = new QVBoxLayout;
+    comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
+    auto descriptionLabel = createDescription(textDescription);
+    comboBoxLayout->addWidget(descriptionLabel);
+
+    QStringList parameterNamesList = std::move(getListByType(typeParam));
+    auto comboBox = createComboBox(parameterNamesList);
+    connect(comboBox, &QComboBox::editTextChanged,
+            [=](const QString& curValue){ m_itemParams[typeParam] =  curValue; });
+    comboBoxLayout->addWidget(comboBox);
+    return comboBoxLayout;
 }
 
-void CWdgSelectionMenu::fillActionNamesList()
+QStringList CWdgSelectionMenu::getListByType(const StripItemParam typeParam)
 {
-	CItemInfoGetter itemInfoGetter;
-	auto listWithTypeNames = itemInfoGetter.getListWithActionNames();
-	fillStringListByVector(m_actionNamesList, listWithTypeNames);
+    CItemInfoGetter itemInfoGetter;
+    std::vector<std::string> vecParams;
+    switch (typeParam)
+    {
+    case StripItemParam::Name:
+    {
+        vecParams = itemInfoGetter.getListWithTypeNames();
+        break;
+    }
+    case StripItemParam::Action:
+    {
+        vecParams = itemInfoGetter.getListWithActionNames();
+        break;
+    }
+    default: break;
+    }
+    QStringList listParams;
+    fillStringListByVector(listParams, vecParams);
+    return listParams;
 }
 
 void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet)
@@ -45,20 +68,9 @@ void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vec
 	}
 }
 
-QLayout* CWdgSelectionMenu::createComboBoxWithDescription(const QStringList& typeItemsList, const std::string& textDescription)
+QLabel* CWdgSelectionMenu::createDescription(const QString& textDescriptions)
 {
-	auto comboBoxLayout = new QVBoxLayout;
-	comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
-	auto descriptionLabel = createDescription(textDescription);
-	comboBoxLayout->addWidget(descriptionLabel);
-	auto comboBox = createComboBox(typeItemsList);
-	comboBoxLayout->addWidget(comboBox);
-	return comboBoxLayout;
-}
-
-QLabel* CWdgSelectionMenu::createDescription(const std::string& textDescriptions)
-{
-	QLabel* descriptionLabel = new QLabel(QString::fromStdString(textDescriptions));
+    QLabel* descriptionLabel = new QLabel(textDescriptions);
 	descriptionLabel->setFixedHeight(50);
 	return descriptionLabel;
 }
@@ -76,6 +88,15 @@ QComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
 void CWdgSelectionMenu::addCreateElementsButton(QBoxLayout* layoutToInsert)
 {
 	auto createElementsButton = new QPushButton("Add element");
-	connect(createElementsButton, &QPushButton::pressed, this, &CWdgSelectionMenu::addElementToScene);
+    connect(createElementsButton, &QPushButton::pressed, this, &CWdgSelectionMenu::createGraphicsItem);
 	layoutToInsert->addWidget(createElementsButton);
+}
+
+void CWdgSelectionMenu::createGraphicsItem()
+{
+    for(auto param : m_itemParams)
+    {
+        qDebug() << param.second;
+    }
+    addElementToScene();
 }

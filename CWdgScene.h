@@ -3,7 +3,6 @@
 
 #include <StableDeclaration.h>
 #include <QWidget>
-#include <vector>
 
 constexpr size_t maxItemCount = 50;
 
