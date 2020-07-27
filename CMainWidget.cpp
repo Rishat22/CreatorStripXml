@@ -9,12 +9,13 @@ CMainWidget::CMainWidget(QWidget *parent)
 	, ui(new Ui::CMainWidget)
 {
 	ui->setupUi(this);
-	CWdgScene* wdgScene = new CWdgScene;
-	ui->horizontalLayout->addWidget(wdgScene);
+	m_wdgScene = new CWdgScene;
+	ui->horizontalLayout->addWidget(m_wdgScene);
 
 	CWdgSelectionMenu* wdgSelectionMenu = new CWdgSelectionMenu;
 	ui->horizontalLayout->addWidget(wdgSelectionMenu);
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, wdgScene, &CWdgScene::addElementToScene);
+	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
+	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
 
 }
 
@@ -25,8 +26,9 @@ CMainWidget::~CMainWidget()
 
 void CMainWidget::saveData(const std::string& strFileName)
 {
-	CStripLoader stripLoader;
-	stripLoader.saveStripItem(strFileName);
+//	CStripLoader stripLoader;
+//	stripLoader.saveStripItem(strFileName);
+	m_wdgScene->GetStripItemslist();
 }
 
 

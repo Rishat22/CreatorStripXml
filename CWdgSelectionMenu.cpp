@@ -4,6 +4,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <Galaxy/CItemInfoGetter.h>
+#include <StripItem.h>
 #include "CWdgSelectionMenu.h"
 
 CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
@@ -12,52 +13,53 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	auto vBoxLayout = new QVBoxLayout;
 
 
-    auto itemNamesBoxLayout = createComboBox(StripItemParam::Name, "Select the item type:");
-    auto actionsBoxLayout = createComboBox(StripItemParam::Action, "Select the action names:");
+	auto itemNamesBoxLayout = createComboBox(StripItemParam::Name, "Select the item type:");
+	auto actionsBoxLayout = createComboBox(StripItemParam::Action, "Select the action names:");
 
 	vBoxLayout->addLayout(itemNamesBoxLayout);
 	vBoxLayout->addLayout(actionsBoxLayout);
-	vBoxLayout->addStretch();
 	addCreateElementsButton(vBoxLayout);
+	vBoxLayout->addStretch();
+	addSaveAllButton(vBoxLayout);
 	setLayout(vBoxLayout);
 }
 
 QLayout* CWdgSelectionMenu::createComboBox(const StripItemParam typeParam, const QString& textDescription)
 {
-    auto comboBoxLayout = new QVBoxLayout;
-    comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
-    auto descriptionLabel = createDescription(textDescription);
-    comboBoxLayout->addWidget(descriptionLabel);
+	auto comboBoxLayout = new QVBoxLayout;
+	comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
+	auto descriptionLabel = createDescription(textDescription);
+	comboBoxLayout->addWidget(descriptionLabel);
 
-    QStringList parameterNamesList = std::move(getListByType(typeParam));
-    auto comboBox = createComboBox(parameterNamesList);
-    connect(comboBox, &QComboBox::editTextChanged,
-            [=](const QString& curValue){ m_itemParams[typeParam] =  curValue; });
-    comboBoxLayout->addWidget(comboBox);
-    return comboBoxLayout;
+	QStringList parameterNamesList = std::move(getListByType(typeParam));
+	auto comboBox = createComboBox(parameterNamesList);
+	connect(comboBox, &QComboBox::editTextChanged,
+			[=](const QString& curValue){ m_itemParams[typeParam] =  curValue; });
+	comboBoxLayout->addWidget(comboBox);
+	return comboBoxLayout;
 }
 
 QStringList CWdgSelectionMenu::getListByType(const StripItemParam typeParam)
 {
-    CItemInfoGetter itemInfoGetter;
-    std::vector<std::string> vecParams;
-    switch (typeParam)
-    {
-    case StripItemParam::Name:
-    {
-        vecParams = itemInfoGetter.getListWithTypeNames();
-        break;
-    }
-    case StripItemParam::Action:
-    {
-        vecParams = itemInfoGetter.getListWithActionNames();
-        break;
-    }
-    default: break;
-    }
-    QStringList listParams;
-    fillStringListByVector(listParams, vecParams);
-    return listParams;
+	CItemInfoGetter itemInfoGetter;
+	std::vector<std::string> vecParams;
+	switch (typeParam)
+	{
+		case StripItemParam::Name:
+		{
+			vecParams = itemInfoGetter.getListWithTypeNames();
+			break;
+		}
+		case StripItemParam::Action:
+		{
+			vecParams = itemInfoGetter.getListWithActionNames();
+			break;
+		}
+		default: break;
+	}
+	QStringList listParams;
+	fillStringListByVector(listParams, vecParams);
+	return listParams;
 }
 
 void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet)
@@ -70,7 +72,7 @@ void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vec
 
 QLabel* CWdgSelectionMenu::createDescription(const QString& textDescriptions)
 {
-    QLabel* descriptionLabel = new QLabel(textDescriptions);
+	QLabel* descriptionLabel = new QLabel(textDescriptions);
 	descriptionLabel->setFixedHeight(50);
 	return descriptionLabel;
 }
@@ -88,15 +90,29 @@ QComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
 void CWdgSelectionMenu::addCreateElementsButton(QBoxLayout* layoutToInsert)
 {
 	auto createElementsButton = new QPushButton("Add element");
-    connect(createElementsButton, &QPushButton::pressed, this, &CWdgSelectionMenu::createGraphicsItem);
+	connect(createElementsButton, &QPushButton::pressed, this, &CWdgSelectionMenu::createGraphicsItem);
 	layoutToInsert->addWidget(createElementsButton);
+}
+
+void CWdgSelectionMenu::addSaveAllButton(QBoxLayout* layoutToInsert)
+{
+	auto saveAllButton = new QPushButton("Save all");
+	connect(saveAllButton, &QPushButton::pressed,
+			[=]()
+	{
+		saveData("xml");
+	});
+	layoutToInsert->addWidget(saveAllButton);
 }
 
 void CWdgSelectionMenu::createGraphicsItem()
 {
-    for(auto param : m_itemParams)
-    {
-        qDebug() << param.second;
-    }
-    addElementToScene();
+	StripItem stripItem;
+	for(auto param : m_itemParams)
+	{
+		if(param.first == StripItemParam::Name)
+			stripItem.name = param.second.toStdString();
+		qDebug() << param.second;
+	}
+	addElementToScene(stripItem);
 }

@@ -2,9 +2,9 @@
 #include <CGraphicsItem.h>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QDebug>
 #include "GlobalSettings.h"
 #include "CWdgScene.h"
+#include <QDebug>
 
 CWdgScene::CWdgScene(QWidget* parent)
 	: QWidget(parent)
@@ -64,15 +64,30 @@ void CWdgScene::fillMatrixItemPos()
 	}
 }
 
-void CWdgScene::addElementToScene()
+void CWdgScene::addElementToScene(const StripItem& stripItem)
 {
 	const auto centerPoint = getCenterPoint();
-	m_scene->addItem(new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
-											 GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red));
+	auto graphicsItem = new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
+												GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red);
+	graphicsItem->setText(QString::fromStdString(stripItem.name));
+	m_stripItems[graphicsItem] = std::move(stripItem);
+	m_scene->addItem(graphicsItem);
 }
 
 QPoint CWdgScene::getCenterPoint()
 {
 	const auto& centerRow = m_matrixPosOfItem[m_matrixPosOfItem.size()/2];
 	return centerRow[centerRow.size()/2];
+}
+
+std::list<StripItem> CWdgScene::GetStripItemsList()
+{
+	std::list<StripItem> stripItemsList;
+	for (auto& relatedItem : m_stripItems)
+	{
+		auto& item = relatedItem.second;
+		item.rect = relatedItem.first->getRect();
+		stripItemsList.push_back(item);
+	}
+	return stripItemsList;
 }

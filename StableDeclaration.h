@@ -16,5 +16,7 @@ class QPoint;
 class QLabel;
 
 class CGraphicsItem;
+class CWdgScene;
+struct StripItem;
 
 #endif // STABLEDECLARATION_H

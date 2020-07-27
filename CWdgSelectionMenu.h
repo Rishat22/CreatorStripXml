@@ -5,29 +5,30 @@
 #include <QWidget>
 enum class StripItemParam
 {
-    Action,
-    Name,
-    FontCoifficient
+	Action,
+	Name,
+	FontCoifficient
 };
 
 class CWdgSelectionMenu : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    CWdgSelectionMenu(QWidget *parent = nullptr);
+	CWdgSelectionMenu(QWidget *parent = nullptr);
 signals:
-    void addElementToScene();
+	void addElementToScene();
 private slots:
-    void createGraphicsItem();
+	void createGraphicsItem();
 private:
-    QStringList getListByType(const StripItemParam typeParam);
-    QLayout* createComboBox(const StripItemParam typeParam, const QString& textDescription);
+	QStringList getListByType(const StripItemParam typeParam);
+	QLayout* createComboBox(const StripItemParam typeParam, const QString& textDescription);
 	void fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet);
 	QComboBox* createComboBox(const QStringList& typeItemsList);
-    QLabel* createDescription(const QString &textDescription);
-    void addCreateElementsButton(QBoxLayout* layoutToInsert);
+	QLabel* createDescription(const QString &textDescription);
+	void addCreateElementsButton(QBoxLayout* layoutToInsert);
+	void addSaveAllButton(QBoxLayout* layoutToInsert);
 private:
-    std::map<StripItemParam, QString> m_itemParams;
+	std::map<StripItemParam, QString> m_itemParams;
 };
 
 #endif // CWDGSELECTIONMENU_H

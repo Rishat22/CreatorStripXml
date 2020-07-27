@@ -22,8 +22,10 @@ public:
     explicit CGraphicsItem(const QRect& size, const QColor color);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+	void setText(const QString& itemText);
+	QRect getRect() const;
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 private:
@@ -32,6 +34,7 @@ private:
     void resizeItem(QGraphicsSceneMouseEvent* event);
     void moveItem(QGraphicsSceneMouseEvent* event);
 private:
+	QString m_itemText;
     QRectF m_itemRect;
     QBrush m_itemBrush;
     ResizeMode m_resizeMode;

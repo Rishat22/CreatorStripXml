@@ -1,6 +1,7 @@
 #ifndef CMAINWIDGET_H
 #define CMAINWIDGET_H
 
+#include <StableDeclaration.h>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -20,5 +21,6 @@ private slots:
 
 private:
     Ui::CMainWidget *ui;
+	CWdgScene* m_wdgScene;
 };
 #endif // CMAINWIDGET_H
