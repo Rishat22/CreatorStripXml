@@ -27,6 +27,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 private:
+    bool isPosAtBottomSide(const QPointF& posToCheck);
+    bool isPosAtRightSide(const QPointF& posToCheck);
     void resizeItem(QGraphicsSceneMouseEvent* event);
     void moveItem(QGraphicsSceneMouseEvent* event);
 private:
