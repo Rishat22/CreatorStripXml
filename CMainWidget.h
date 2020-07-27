@@ -15,6 +15,9 @@ public:
     CMainWidget(QWidget *parent = nullptr);
     ~CMainWidget();
 
+private slots:
+	void saveData(const std::string& strFileName);
+
 private:
     Ui::CMainWidget *ui;
 };

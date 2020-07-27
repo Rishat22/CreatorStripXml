@@ -10,7 +10,8 @@ class CWdgSelectionMenu : public QWidget
 public:
     CWdgSelectionMenu(QWidget *parent = nullptr);
 signals:
-    void addElementToScene();
+	void addElementToScene();
+	void saveStripItem(const std::string& strFileName);
 private:
 	void fillTypeItemsList();
 	void fillActionNamesList();

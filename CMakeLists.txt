@@ -34,7 +34,9 @@ if(ANDROID)
     CMainWidget.h
     CWdgScene.h
     CWdgSelectionMenu.h
+    CStripLoader.h
     GlobalSettings.h
+    StripItem.h
     StableDeclaration.h
     Galaxy/CItemInfoGetter.h
     Galaxy/CStripItem.h
@@ -50,6 +52,7 @@ else()
     CMainWidget.cpp
     CWdgScene.cpp
     CWdgSelectionMenu.cpp
+    CStripLoader.cpp
     GlobalSettings.cpp
     Galaxy/CItemInfoGetter.cpp
     Galaxy/CStripItem.cpp
