@@ -6,6 +6,7 @@
 enum class StripItemParam
 {
 	Action,
+	Trigger,
 	Name,
 	FontCoifficient
 };
@@ -16,7 +17,8 @@ class CWdgSelectionMenu : public QWidget
 public:
 	CWdgSelectionMenu(QWidget *parent = nullptr);
 signals:
-	void addElementToScene();
+	void addElementToScene(const StripItem& stripItem);
+	void saveData(const std::string& strFileName);
 private slots:
 	void createGraphicsItem();
 private:

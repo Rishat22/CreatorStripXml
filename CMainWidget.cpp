@@ -26,9 +26,13 @@ CMainWidget::~CMainWidget()
 
 void CMainWidget::saveData(const std::string& strFileName)
 {
-//	CStripLoader stripLoader;
-//	stripLoader.saveStripItem(strFileName);
-	m_wdgScene->GetStripItemslist();
+	CStripLoader stripLoader;
+	stripLoader.saveStripItem(strFileName);
+	auto stripItemsList = std::move(m_wdgScene->GetStripItemsList());
+	for(StripItem& stripItem : stripItemsList)
+	{
+		qDebug() << QString::fromStdString(stripItem.name) << stripItem.rect << QString::fromStdString(stripItem.interaction.action);
+	}
 }
 
 

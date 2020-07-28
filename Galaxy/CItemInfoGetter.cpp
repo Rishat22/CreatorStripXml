@@ -1,6 +1,7 @@
 #include "CItemInfoGetter.h"
 #include <Galaxy/CStripItem.h>
 #include <Galaxy/CActionItem.h>
+#include <Galaxy/CMouseButtonItem.h>
 
 CItemInfoGetter::CItemInfoGetter()
 {
@@ -30,6 +31,21 @@ std::vector<std::string> CItemInfoGetter::getListWithActionNames()
 	{
 		std::string itemName;
 		if(actionItem.GetNameById(typeItemIndex, itemName))
+		{
+			listWithActionNames.push_back(std::move(itemName));
+		}
+	}
+	return listWithActionNames;
+}
+
+std::vector<std::string> CItemInfoGetter::getListWithTriggers()
+{
+	std::vector<std::string> listWithActionNames;
+	UUserPolicies::CMouseButtonItem mouseItem;
+	for(auto typeItemIndex = 0; typeItemIndex <= (int)mouseItem.LastElement(); typeItemIndex++)
+	{
+		std::string itemName;
+		if(mouseItem.GetNameById(typeItemIndex, itemName))
 		{
 			listWithActionNames.push_back(std::move(itemName));
 		}

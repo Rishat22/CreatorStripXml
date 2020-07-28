@@ -18,14 +18,6 @@ struct StripItem
 {
 public:
 	StripItem() = default;
-	bool operator < ( const StripItem& compareStripItem)
-	{
-		if(rect.x() == compareStripItem.rect.x())
-		{
-			return rect.y() < compareStripItem.rect.y();
-		}
-		return rect.x() < compareStripItem.rect.x();
-	}
 public:
     std::string name;
     Interaction interaction;

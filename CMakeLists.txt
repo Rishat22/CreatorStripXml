@@ -38,10 +38,11 @@ if(ANDROID)
     GlobalSettings.h
     StripItem.h
     StableDeclaration.h
+    Galaxy/CActionItem.h
+    Galaxy/CBaseFieldItem.h
+    Galaxy/CMouseButtonItem.h
     Galaxy/CItemInfoGetter.h
     Galaxy/CStripItem.h
-    Galaxy/CBaseFieldItem.h
-    Galaxy/CActionItem.h
     cmainwidget.ui
     ${TS_FILES}
   )
@@ -54,10 +55,11 @@ else()
     CWdgSelectionMenu.cpp
     CStripLoader.cpp
     GlobalSettings.cpp
+    Galaxy/CActionItem.cpp
+    Galaxy/CBaseFieldItem.cpp
+    Galaxy/CMouseButtonItem.cpp
     Galaxy/CItemInfoGetter.cpp
     Galaxy/CStripItem.cpp
-    Galaxy/CBaseFieldItem.cpp
-    Galaxy/CActionItem.cpp
     cmainwidget.ui
     ${TS_FILES}
   )

@@ -24,6 +24,14 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void setText(const QString& itemText);
 	QRect getRect() const;
+	bool operator < (const CGraphicsItem& compareGraphicsItem) const
+	{
+		if(getRect().x() == compareGraphicsItem.getRect().x())
+		{
+			return getRect().y() < compareGraphicsItem.getRect().y();
+		}
+		return getRect().x() < compareGraphicsItem.getRect().x();
+	}
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

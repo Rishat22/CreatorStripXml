@@ -15,9 +15,11 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 
 	auto itemNamesBoxLayout = createComboBox(StripItemParam::Name, "Select the item type:");
 	auto actionsBoxLayout = createComboBox(StripItemParam::Action, "Select the action names:");
+	auto triggersBoxLayout = createComboBox(StripItemParam::Trigger, "Select trigger:");
 
 	vBoxLayout->addLayout(itemNamesBoxLayout);
 	vBoxLayout->addLayout(actionsBoxLayout);
+	vBoxLayout->addLayout(triggersBoxLayout);
 	addCreateElementsButton(vBoxLayout);
 	vBoxLayout->addStretch();
 	addSaveAllButton(vBoxLayout);
@@ -55,6 +57,11 @@ QStringList CWdgSelectionMenu::getListByType(const StripItemParam typeParam)
 			vecParams = itemInfoGetter.getListWithActionNames();
 			break;
 		}
+		case StripItemParam::Trigger:
+		{
+			vecParams = itemInfoGetter.getListWithTriggers();
+			break;
+		}
 		default: break;
 	}
 	QStringList listParams;
@@ -73,7 +80,7 @@ void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vec
 QLabel* CWdgSelectionMenu::createDescription(const QString& textDescriptions)
 {
 	QLabel* descriptionLabel = new QLabel(textDescriptions);
-	descriptionLabel->setFixedHeight(50);
+	descriptionLabel->setFixedHeight(20);
 	return descriptionLabel;
 }
 
