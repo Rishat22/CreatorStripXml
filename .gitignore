@@ -1,0 +1,60 @@
+# Temporary files #
+###################
+*~
+.*
+*.tmp
+*.autosave
+!/.gitignore
+*.bak
+
+# Project files   #
+###################
+CMakeLists.txt.user*
+*.user
+*.tag
+*.pcs
+*.kdev3
+*.kdev4
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.xz
+*.bz2
+*.bzip
+*.bzip2
+*.ace
+*.arj
+*.zoo
+*.rpm
+*.deb
+*.tgz
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+errors.txt
+errors-and-warnings.txt
+nohup.out
+
+# version #
+###########
+version.h
