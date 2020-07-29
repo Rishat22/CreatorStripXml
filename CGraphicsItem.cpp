@@ -18,9 +18,13 @@ QRectF CGraphicsItem::boundingRect() const
 
 void CGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-	painter->fillRect(m_itemRect, m_itemBrush);
-	painter->drawText(m_itemRect, Qt::AlignVCenter, m_itemText);
-	painter->drawRect(m_itemRect);
+	const auto adjustItemRect =	QRectF(m_itemRect.x() + adjustMouseResize/4,
+									   m_itemRect.y() + adjustMouseResize/4,
+									   m_itemRect.width() - adjustMouseResize/2,
+									   m_itemRect.height() - adjustMouseResize/2);
+	painter->fillRect(adjustItemRect, m_itemBrush);
+	painter->drawText(adjustItemRect, Qt::AlignVCenter, m_itemText);
+	painter->drawRect(adjustItemRect);
 }
 
 void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
