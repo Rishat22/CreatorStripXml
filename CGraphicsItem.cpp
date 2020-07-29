@@ -1,7 +1,6 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
-#include <QDebug>
 #include "GlobalSettings.h"
 #include "CGraphicsItem.h"
 

@@ -4,7 +4,6 @@
 #include <QGraphicsScene>
 #include "GlobalSettings.h"
 #include "CWdgScene.h"
-#include <QDebug>
 
 CWdgScene::CWdgScene(QWidget* parent)
 	: QWidget(parent)

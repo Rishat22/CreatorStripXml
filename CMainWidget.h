@@ -20,7 +20,6 @@ private slots:
 	void saveData(const std::string& strFileName);
 
 private:
-    Ui::CMainWidget *ui;
 	CWdgScene* m_wdgScene;
 };
 #endif // CMAINWIDGET_H

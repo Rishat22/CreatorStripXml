@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QLabel>
+#include <QFileDialog>
 #include <Galaxy/CItemInfoGetter.h>
 #include <StripItem.h>
 #include "CWdgSelectionMenu.h"
@@ -22,7 +23,7 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	vBoxLayout->addLayout(triggersBoxLayout);
 	addCreateElementsButton(vBoxLayout);
 	vBoxLayout->addStretch();
-	addSaveAllButton(vBoxLayout);
+	addSaveButton(vBoxLayout);
 	setLayout(vBoxLayout);
 }
 
@@ -101,13 +102,15 @@ void CWdgSelectionMenu::addCreateElementsButton(QBoxLayout* layoutToInsert)
 	layoutToInsert->addWidget(createElementsButton);
 }
 
-void CWdgSelectionMenu::addSaveAllButton(QBoxLayout* layoutToInsert)
+void CWdgSelectionMenu::addSaveButton(QBoxLayout* layoutToInsert)
 {
-	auto saveAllButton = new QPushButton("Save all");
+	auto saveAllButton = new QPushButton("Save strip items");
 	connect(saveAllButton, &QPushButton::pressed,
 			[=]()
 	{
-		saveData("xml");
+		QString filter = "XML files (*.xml)";
+		QString fileName = QFileDialog::getSaveFileName(this, "Select the path to save", "../", filter);
+		saveData(std::move(fileName.toStdString()));
 	});
 	layoutToInsert->addWidget(saveAllButton);
 }
@@ -119,7 +122,6 @@ void CWdgSelectionMenu::createGraphicsItem()
 	{
 		if(param.first == StripItemParam::Name)
 			stripItem.name = param.second.toStdString();
-		qDebug() << param.second;
 	}
 	addElementToScene(stripItem);
 }

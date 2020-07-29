@@ -1,17 +1,24 @@
 #ifndef CSTRIPLOADER_H
 #define CSTRIPLOADER_H
-#include <QObject>
+#include <USerialization/CXmlHandler.h>
+#include <StableDeclaration.h>
 
-class CStripLoader : public QObject
+using namespace USerialization;
+class CStripLoader : public CXmlHandler
 {
-    Q_OBJECT
+
 public:
 	CStripLoader();
 
-public slots:
-	bool saveStripItem(const std::string& strFileName);
-	//return (StripItem)Struc
-	void loadStripItem(const std::string& strFileName);
+public:
+	void setData(const std::list<StripItem>& stripItemsList);
+	bool save(const std::string& strFileName);
+	std::list<StripItem> load(const std::string& strFileName);
+
+	bool XmlNodeBegin(void);
+	bool XmlNodeDecode(const std::string& strNodeValue);
+private:
+	std::list<StripItem> m_stripItemsList;
 };
 
 #endif // CSTRIPLOADER_H

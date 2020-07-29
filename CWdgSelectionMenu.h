@@ -28,7 +28,7 @@ private:
 	QComboBox* createComboBox(const QStringList& typeItemsList);
 	QLabel* createDescription(const QString &textDescription);
 	void addCreateElementsButton(QBoxLayout* layoutToInsert);
-	void addSaveAllButton(QBoxLayout* layoutToInsert);
+	void addSaveButton(QBoxLayout* layoutToInsert);
 private:
 	std::map<StripItemParam, QString> m_itemParams;
 };
