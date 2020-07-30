@@ -14,11 +14,11 @@ CWdgScene::CWdgScene(QWidget* parent)
 	m_scene = new QGraphicsScene(this);
 	m_scene->setBackgroundBrush(QBrush(Qt::gray));
 	m_view->setScene(m_scene);
-	m_view->setSceneRect(0, 0, 650, 650);
 	m_view->setContentsMargins(0, 0, 0, 0);
+	m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	hBoxLayout->setContentsMargins(0, 0, 0, 0);
 	setContentsMargins(0, 0, 0, 0);
-	setFixedSize(660, 660);
 	setLayout(hBoxLayout);
 	addGridToScene();
 	fillMatrixItemPos();
@@ -28,30 +28,29 @@ CWdgScene::CWdgScene(QWidget* parent)
 void CWdgScene::addGridToScene()
 {
 	// Add the vertical lines
-	const auto viewWidth = m_view->sceneRect().width();
-	for (int posXLine = 0; posXLine <= viewWidth; posXLine += GlobalSettings::itemStep())
+	const auto viewSize = maxItemsSize * GlobalSettings::itemStep();
+	for (int posXLine = 0; posXLine <= viewSize; posXLine += GlobalSettings::itemStep())
 	{
-		m_scene->addLine(posXLine, 0, posXLine, viewWidth, QPen(Qt::black));
+		m_scene->addLine(posXLine, 0, posXLine, viewSize, QPen(Qt::black));
 	}
 	// Add the horizontal lines
-	const auto viewHeight = m_view->sceneRect().height();
-	for (int posYLine = 0; posYLine <= viewHeight; posYLine += GlobalSettings::itemStep())
+	for (int posYLine = 0; posYLine <= viewSize; posYLine += GlobalSettings::itemStep())
 	{
-		m_scene->addLine(0, posYLine, viewHeight, posYLine, QPen(Qt::black));
+		m_scene->addLine(0, posYLine, viewSize, posYLine, QPen(Qt::black));
 	}
 
 }
 
 void CWdgScene::fillMatrixItemPos()
 {
-	m_matrixPosOfItem.reserve(maxItemCount);
+	m_matrixPosOfItem.reserve(maxItemsSize);
 	auto posYOfItem = 0;
 	auto rowIndex = 0;
 	while(posYOfItem < m_view->sceneRect().width())
 	{
 		auto posXOfItem = 0;
 		std::vector<QPoint> columns;
-		columns.reserve(maxItemCount);
+		columns.reserve(maxItemsSize);
 		m_matrixPosOfItem.push_back(std::move(columns));
 		while(posXOfItem < m_view->sceneRect().width())
 		{
@@ -59,7 +58,7 @@ void CWdgScene::fillMatrixItemPos()
 			posXOfItem += GlobalSettings::itemStep();
 		}
 		posYOfItem += GlobalSettings::itemStep();
-		rowIndex ++;
+		rowIndex++;
 	}
 }
 

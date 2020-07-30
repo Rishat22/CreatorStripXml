@@ -5,7 +5,7 @@
 #include <StripItem.h>
 #include <QWidget>
 
-constexpr size_t maxItemCount = 50;
+constexpr size_t maxItemsSize = 30;
 
 class CWdgScene : public QWidget
 {
