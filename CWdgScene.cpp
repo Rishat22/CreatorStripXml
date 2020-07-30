@@ -74,8 +74,17 @@ void CWdgScene::addElementToScene(const StripItem& stripItem)
 
 QPoint CWdgScene::getCenterPoint()
 {
-	const auto& centerRow = m_matrixPosOfItem[m_matrixPosOfItem.size()/2];
-	return centerRow[centerRow.size()/2];
+	const auto centerRowIndex = static_cast<size_t>(this->width() / GlobalSettings::itemStep());
+	const auto centerColumnIndex = static_cast<size_t>(this->height() / GlobalSettings::itemStep());
+	try
+	{
+		const auto& centerRow = m_matrixPosOfItem[centerColumnIndex/2];
+		return centerRow[centerRowIndex/2];
+	}
+	catch(const std::out_of_range& oor)
+	{
+		return m_matrixPosOfItem[0][0];
+	}
 }
 
 std::list<StripItem> CWdgScene::GetStripItemsList()
