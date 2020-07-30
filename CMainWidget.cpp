@@ -15,23 +15,21 @@ CMainWidget::CMainWidget(QWidget *parent)
 	mainLayout->addWidget(wdgSelectionMenu);
 
 	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
+	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, [=](const std::string& strFileName)
+	{
+		if(strFileName.empty())
+		{
+			return;
+		}
+		CStripLoader stripLoader;
+		stripLoader.setData(std::move(m_wdgScene->GetStripItemsList()));
+		stripLoader.save(strFileName);
+	});
 	setLayout(mainLayout);
 }
 
 CMainWidget::~CMainWidget()
 {
-}
-
-void CMainWidget::saveData(const std::string& strFileName)
-{
-	CStripLoader stripLoader;
-//	stripLoader.save(strFileName);
-	auto stripItemsList = std::move(m_wdgScene->GetStripItemsList());
-	for(StripItem& stripItem : stripItemsList)
-	{
-		qDebug() << QString::fromStdString(stripItem.name) << stripItem.rect << QString::fromStdString(stripItem.interaction.action);
-	}
 }
 
 

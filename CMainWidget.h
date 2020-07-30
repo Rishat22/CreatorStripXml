@@ -17,7 +17,6 @@ public:
     ~CMainWidget();
 
 private slots:
-	void saveData(const std::string& strFileName);
 
 private:
 	CWdgScene* m_wdgScene;
