@@ -82,10 +82,14 @@ QPoint CWdgScene::getCenterPoint()
 std::list<StripItem> CWdgScene::GetStripItemsList()
 {
 	std::list<StripItem> stripItemsList;
+	const auto itemStep = GlobalSettings::itemStep();
 	for (auto& relatedItem : m_stripItems)
 	{
 		auto& item = relatedItem.second;
-		item.rect = relatedItem.first->getRect();
+		item.rect = QRect(relatedItem.first->getRect().x() / itemStep,
+				relatedItem.first->getRect().y() / itemStep,
+				relatedItem.first->getRect().width() / itemStep,
+				relatedItem.first->getRect().height() / itemStep);
 		stripItemsList.push_back(item);
 	}
 	return stripItemsList;
