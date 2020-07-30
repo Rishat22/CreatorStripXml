@@ -19,5 +19,6 @@ class QLabel;
 class CGraphicsItem;
 class CWdgScene;
 struct StripItem;
+enum class TypeItemParam;
 
 #endif // STABLEDECLARATION_H
