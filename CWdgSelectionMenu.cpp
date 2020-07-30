@@ -14,9 +14,9 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	auto vBoxLayout = new QVBoxLayout;
 
 
-	auto itemNamesBoxLayout = createComboBox(StripItemParam::Name, "Select the item type:");
-	auto actionsBoxLayout = createComboBox(StripItemParam::Action, "Select the action names:");
-	auto triggersBoxLayout = createComboBox(StripItemParam::Trigger, "Select trigger:");
+	auto itemNamesBoxLayout = createComboBox(TypeItemParam::Name, "Select the item type:");
+	auto actionsBoxLayout = createComboBox(TypeItemParam::Action, "Select the action names:");
+	auto triggersBoxLayout = createComboBox(TypeItemParam::Trigger, "Select trigger:");
 
 	vBoxLayout->addLayout(itemNamesBoxLayout);
 	vBoxLayout->addLayout(actionsBoxLayout);
@@ -27,7 +27,7 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	setLayout(vBoxLayout);
 }
 
-QLayout* CWdgSelectionMenu::createComboBox(const StripItemParam typeParam, const QString& textDescription)
+QLayout* CWdgSelectionMenu::createComboBox(const TypeItemParam typeParam, const QString& textDescription)
 {
 	auto comboBoxLayout = new QVBoxLayout;
 	comboBoxLayout->setSizeConstraint(QLayout::SetMinimumSize);
@@ -42,23 +42,23 @@ QLayout* CWdgSelectionMenu::createComboBox(const StripItemParam typeParam, const
 	return comboBoxLayout;
 }
 
-QStringList CWdgSelectionMenu::getListByType(const StripItemParam typeParam)
+QStringList CWdgSelectionMenu::getListByType(const TypeItemParam typeParam)
 {
 	CItemInfoGetter itemInfoGetter;
 	std::vector<std::string> vecParams;
 	switch (typeParam)
 	{
-		case StripItemParam::Name:
+		case TypeItemParam::Name:
 		{
 			vecParams = itemInfoGetter.getListWithTypeNames();
 			break;
 		}
-		case StripItemParam::Action:
+		case TypeItemParam::Action:
 		{
 			vecParams = itemInfoGetter.getListWithActionNames();
 			break;
 		}
-		case StripItemParam::Trigger:
+		case TypeItemParam::Trigger:
 		{
 			vecParams = itemInfoGetter.getListWithTriggers();
 			break;
@@ -120,8 +120,8 @@ void CWdgSelectionMenu::createGraphicsItem()
 	StripItem stripItem;
 	for(auto param : m_itemParams)
 	{
-		if(param.first == StripItemParam::Name)
-			stripItem.name = param.second.toStdString();
+		stripItem.setDataByType(param.first, param.second.toStdString());
+
 	}
 	addElementToScene(stripItem);
 }

@@ -3,13 +3,6 @@
 
 #include <StableDeclaration.h>
 #include <QWidget>
-enum class StripItemParam
-{
-	Action,
-	Trigger,
-	Name,
-	FontCoifficient
-};
 
 class CWdgSelectionMenu : public QWidget
 {
@@ -22,15 +15,15 @@ signals:
 private slots:
 	void createGraphicsItem();
 private:
-	QStringList getListByType(const StripItemParam typeParam);
-	QLayout* createComboBox(const StripItemParam typeParam, const QString& textDescription);
+	QStringList getListByType(const TypeItemParam typeParam);
+	QLayout* createComboBox(const TypeItemParam typeParam, const QString& textDescription);
 	void fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet);
 	QComboBox* createComboBox(const QStringList& typeItemsList);
 	QLabel* createDescription(const QString &textDescription);
 	void addCreateElementsButton(QBoxLayout* layoutToInsert);
 	void addSaveButton(QBoxLayout* layoutToInsert);
 private:
-	std::map<StripItemParam, QString> m_itemParams;
+	std::map<TypeItemParam, QString> m_itemParams;
 };
 
 #endif // CWDGSELECTIONMENU_H
