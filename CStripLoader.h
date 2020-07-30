@@ -18,6 +18,9 @@ public:
 	bool XmlNodeBegin(void);
 	bool XmlNodeDecode(const std::string& strNodeValue);
 private:
+	void saveParams(CXmlNode* parentNode, const StripItem& item);
+	void saveInteractions(CXmlNode* parentNode, const StripItem& item);
+private:
 	std::list<StripItem> m_stripItemsList;
 };
 
