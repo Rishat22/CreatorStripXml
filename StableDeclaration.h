@@ -8,6 +8,7 @@
 class QBrush;
 class QBoxLayout;
 class QHBoxLayout;
+class QGroupBox;
 class QComboBox;
 class QGraphicsItem;
 class QGraphicsView;

@@ -29,12 +29,12 @@ void CWdgScene::addGridToScene()
 {
 	// Add the vertical lines
 	const auto viewSize = maxItemsSize * GlobalSettings::itemStep();
-	for (int posXLine = 0; posXLine <= viewSize; posXLine += GlobalSettings::itemStep())
+	for (size_t posXLine = 0; posXLine <= viewSize; posXLine += GlobalSettings::itemStep())
 	{
 		m_scene->addLine(posXLine, 0, posXLine, viewSize, QPen(Qt::black));
 	}
 	// Add the horizontal lines
-	for (int posYLine = 0; posYLine <= viewSize; posYLine += GlobalSettings::itemStep())
+	for (size_t posYLine = 0; posYLine <= viewSize; posYLine += GlobalSettings::itemStep())
 	{
 		m_scene->addLine(0, posYLine, viewSize, posYLine, QPen(Qt::black));
 	}

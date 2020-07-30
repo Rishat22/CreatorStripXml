@@ -2,6 +2,7 @@
 #include <QCompleter>
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QFileDialog>
 #include <Galaxy/CItemInfoGetter.h>
@@ -14,17 +15,27 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	auto vBoxLayout = new QVBoxLayout;
 
 
-	auto itemNamesBoxLayout = createComboBox(TypeItemParam::Name, "Select the item type:");
-	auto actionsBoxLayout = createComboBox(TypeItemParam::Action, "Select the action names:");
-	auto triggersBoxLayout = createComboBox(TypeItemParam::Trigger, "Select trigger:");
+	auto itemNamesBoxLayout = createComboBox(TypeItemParam::Name, "Select item type:");
 
 	vBoxLayout->addLayout(itemNamesBoxLayout);
-	vBoxLayout->addLayout(actionsBoxLayout);
-	vBoxLayout->addLayout(triggersBoxLayout);
-	addCreateElementsButton(vBoxLayout);
+	vBoxLayout->addWidget(createInteraction());
+	addCreateItemButton(vBoxLayout);
 	vBoxLayout->addStretch();
 	addSaveButton(vBoxLayout);
 	setLayout(vBoxLayout);
+}
+
+
+QGroupBox* CWdgSelectionMenu::createInteraction()
+{
+	auto groupBox = new QGroupBox;
+	auto vInteractionLayout = new QVBoxLayout;
+	auto actionsBoxLayout = createComboBox(TypeItemParam::Action, "Select action name:");
+	auto triggersBoxLayout = createComboBox(TypeItemParam::Trigger, "Select trigger:");
+	vInteractionLayout->addLayout(actionsBoxLayout);
+	vInteractionLayout->addLayout(triggersBoxLayout);
+	groupBox->setLayout(vInteractionLayout);
+	return groupBox;
 }
 
 QLayout* CWdgSelectionMenu::createComboBox(const TypeItemParam typeParam, const QString& textDescription)
@@ -95,11 +106,11 @@ QComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
 	comboBox->setCompleter(completer);
 	return comboBox;
 }
-void CWdgSelectionMenu::addCreateElementsButton(QBoxLayout* layoutToInsert)
+void CWdgSelectionMenu::addCreateItemButton(QBoxLayout* layoutToInsert)
 {
-	auto createElementsButton = new QPushButton("Add element");
-	connect(createElementsButton, &QPushButton::pressed, this, &CWdgSelectionMenu::createGraphicsItem);
-	layoutToInsert->addWidget(createElementsButton);
+	auto createItemButton = new QPushButton("Add Item");
+	connect(createItemButton, &QPushButton::pressed, this, &CWdgSelectionMenu::createGraphicsItem);
+	layoutToInsert->addWidget(createItemButton);
 }
 
 void CWdgSelectionMenu::addSaveButton(QBoxLayout* layoutToInsert)

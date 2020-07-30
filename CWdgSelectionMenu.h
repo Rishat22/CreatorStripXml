@@ -16,11 +16,12 @@ private slots:
 	void createGraphicsItem();
 private:
 	QStringList getListByType(const TypeItemParam typeParam);
+	QGroupBox* createInteraction();
 	QLayout* createComboBox(const TypeItemParam typeParam, const QString& textDescription);
 	void fillStringListByVector(QStringList& listToFill, std::vector<std::string> vecFromGet);
 	QComboBox* createComboBox(const QStringList& typeItemsList);
 	QLabel* createDescription(const QString &textDescription);
-	void addCreateElementsButton(QBoxLayout* layoutToInsert);
+	void addCreateItemButton(QBoxLayout* layoutToInsert);
 	void addSaveButton(QBoxLayout* layoutToInsert);
 private:
 	std::map<TypeItemParam, QString> m_itemParams;
