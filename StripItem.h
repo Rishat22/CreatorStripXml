@@ -26,7 +26,14 @@ struct StripItem
 {
 public:
 	StripItem() = default;
-public:
+	bool operator < ( const StripItem& compareStripItem)
+	{
+		if(rect.x() == compareStripItem.rect.x())
+		{
+			return rect.y() < compareStripItem.rect.y();
+		}
+		return rect.x() < compareStripItem.rect.x();
+	}
 	bool setDataByType(const TypeItemParam type, const std::string& paramData)
 	{
 		bool result = true;

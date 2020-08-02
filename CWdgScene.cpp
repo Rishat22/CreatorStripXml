@@ -100,5 +100,6 @@ std::list<StripItem> CWdgScene::GetStripItemsList()
 				relatedItem.first->getRect().height() / itemStep);
 		stripItemsList.push_back(item);
 	}
+	stripItemsList.sort();
 	return stripItemsList;
 }

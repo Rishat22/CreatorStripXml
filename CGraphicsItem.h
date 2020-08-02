@@ -24,14 +24,6 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	void setText(const QString& itemText);
 	QRect getRect() const;
-	bool operator < (const CGraphicsItem& compareGraphicsItem) const
-	{
-		if(getRect().x() == compareGraphicsItem.getRect().x())
-		{
-			return getRect().y() < compareGraphicsItem.getRect().y();
-		}
-		return getRect().x() < compareGraphicsItem.getRect().x();
-	}
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
@@ -39,6 +31,8 @@ protected:
 private:
     bool isPosAtBottomSide(const QPointF& posToCheck);
     bool isPosAtRightSide(const QPointF& posToCheck);
+	bool isPosAtTopSide(const QPointF& posToCheck);
+	bool isPosAtLeftSide(const QPointF& posToCheck);
     void resizeItem(QGraphicsSceneMouseEvent* event);
     void moveItem(QGraphicsSceneMouseEvent* event);
 private:
@@ -47,7 +41,7 @@ private:
     QBrush m_itemBrush;
     ResizeMode m_resizeMode;
     bool m_isMoveMode;
-    QPointF m_initPos;
+	QPointF m_initPos;
 };
 
 #endif // CGRAPHICSITEM_H

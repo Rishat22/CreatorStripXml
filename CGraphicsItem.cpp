@@ -42,6 +42,20 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		setCursor(QCursor(Qt::SizeHorCursor));
 
 	}
+	else if(isPosAtTopSide(event->pos()))
+	{
+		m_isMoveMode = false;
+		m_resizeMode = ResizeMode::top;
+		setCursor(QCursor(Qt::SizeVerCursor));
+
+	}
+	else if(isPosAtLeftSide(event->pos()))
+	{
+		m_isMoveMode = false;
+		m_resizeMode = ResizeMode::left;
+		setCursor(QCursor(Qt::SizeHorCursor));
+
+	}
 	else
 	{
 		m_isMoveMode = true;
@@ -67,6 +81,30 @@ bool CGraphicsItem::isPosAtRightSide(const QPointF& posToCheck)
 {
 	if((posToCheck.x() > boundingRect().right() - adjustMouseResize)
 			&& (posToCheck.x() < boundingRect().right() + adjustMouseResize)
+			&& (posToCheck.y() < boundingRect().bottom() - adjustMouseResize)
+			&& (posToCheck.y() > boundingRect().top() + adjustMouseResize))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool CGraphicsItem::isPosAtTopSide(const QPointF& posToCheck)
+{
+	if((posToCheck.x() > boundingRect().left() + adjustMouseResize)
+			&& (posToCheck.x() < boundingRect().right() - adjustMouseResize)
+			&& (posToCheck.y() < boundingRect().top() + adjustMouseResize)
+			&& (posToCheck.y() > boundingRect().top() - adjustMouseResize))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool CGraphicsItem::isPosAtLeftSide(const QPointF& posToCheck)
+{
+	if((posToCheck.x() > boundingRect().left() - adjustMouseResize)
+			&& (posToCheck.x() < boundingRect().left() + adjustMouseResize)
 			&& (posToCheck.y() < boundingRect().bottom() - adjustMouseResize)
 			&& (posToCheck.y() > boundingRect().top() + adjustMouseResize))
 	{
@@ -103,6 +141,18 @@ void CGraphicsItem::resizeItem(QGraphicsSceneMouseEvent* event)
 		prepareGeometryChange();
 		const auto newWidth = boundingRect().width() + event->scenePos().x() - m_initPos.x();
 		m_itemRect.setWidth(GlobalSettings::modulusOfStep(newWidth));
+	}
+	else if(m_resizeMode == ResizeMode::top)
+	{
+		prepareGeometryChange();
+		const auto newYPos = m_initPos.y() - event->scenePos().y();
+		m_itemRect.setY(m_itemRect.y() - GlobalSettings::modulusOfStep(newYPos));
+	}
+	else if(m_resizeMode == ResizeMode::left)
+	{
+		prepareGeometryChange();
+		const auto newXPos =  m_initPos.x() - event->scenePos().x();
+		m_itemRect.setX(m_itemRect.x() - GlobalSettings::modulusOfStep(newXPos));
 	}
 	setCursor(QCursor(Qt::ArrowCursor));
 }

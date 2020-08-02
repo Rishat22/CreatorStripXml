@@ -25,11 +25,7 @@ private:
     QGraphicsScene* m_scene;
     QGraphicsView* m_view;
 	std::vector<std::vector<QPoint>> m_matrixPosOfItem;
-	//Required sort by params pointer than by address.
-	template<class T> struct ptr_less {
-		bool operator()(T* lhs, T* rhs) {
-			return *lhs < *rhs; }};
-	std::map<CGraphicsItem*, StripItem, ptr_less<CGraphicsItem>> m_stripItems;
+	std::map<CGraphicsItem*, StripItem> m_stripItems;
 };
 
 #endif // CWDGTOWIN_H
