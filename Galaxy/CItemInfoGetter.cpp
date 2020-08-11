@@ -1,7 +1,7 @@
 #include "CItemInfoGetter.h"
-#include <Galaxy/CStripItem.h>
-#include <Galaxy/CActionItem.h>
-#include <Galaxy/CMouseButtonItem.h>
+#include <UUserPolicies/CStripItem.h>
+#include <UUserPolicies/CActionItem.h>
+#include <UUserPolicies/CMouseButtonItem.h>
 
 CItemInfoGetter::CItemInfoGetter()
 {
@@ -11,7 +11,7 @@ CItemInfoGetter::CItemInfoGetter()
 std::vector<std::string> CItemInfoGetter::getListWithTypeNames()
 {
 	std::vector<std::string> listWithTypeNames;
-	UVisualTools::CStripItem stripItem;
+	UUserPolicies::CStripItem stripItem;
 	for(auto typeItemIndex = 0; typeItemIndex <= (int)stripItem.LastElement(); typeItemIndex++)
 	{
 		std::string itemName;

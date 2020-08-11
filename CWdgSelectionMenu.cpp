@@ -22,6 +22,7 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	addCreateItemButton(vBoxLayout);
 	vBoxLayout->addStretch();
 	addSaveButton(vBoxLayout);
+	addLoadButton(vBoxLayout);
 	setLayout(vBoxLayout);
 }
 
@@ -124,6 +125,19 @@ void CWdgSelectionMenu::addSaveButton(QBoxLayout* layoutToInsert)
 		saveData(std::move(fileName.toStdString()));
 	});
 	layoutToInsert->addWidget(saveAllButton);
+}
+
+void CWdgSelectionMenu::addLoadButton(QBoxLayout* layoutToInsert)
+{
+	auto loadItemsButton = new QPushButton("Load strip items");
+	connect(loadItemsButton, &QPushButton::pressed,
+			[=]()
+	{
+		QString filter = "XML files (*.xml)";
+		QString fileName = QFileDialog::getOpenFileName(this, "Open file", "../", filter);
+		loadData(std::move(fileName.toStdString()));
+	});
+	layoutToInsert->addWidget(loadItemsButton);
 }
 
 void CWdgSelectionMenu::createGraphicsItem()

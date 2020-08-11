@@ -12,6 +12,13 @@ void CStripLoader::setData(const std::list<StripItem>& stripItemsList)
 	m_stripItemsList = stripItemsList;
 }
 
+std::list<StripItem> CStripLoader::load(const std::string& strFileName)
+{
+	m_stripItemsList.clear();
+	CXmlHandler::Load(strFileName);
+	return std::list<StripItem>();
+}
+
 //ToDo need to fix hardcore saving.
 bool CStripLoader::save(const std::string& strFileName)
 {
@@ -53,18 +60,36 @@ void CStripLoader::saveInteractions(CXmlNode* parentNode, const StripItem& item)
 	actionNode->SetValue(itemInteraction.action);
 }
 
-std::list<StripItem> CStripLoader::load(const std::string& strFileName)
-{
-	return std::list<StripItem>();
-}
-
 bool CStripLoader::XmlNodeBegin(void)
 {
+	const S32 topNodeIndex = 0;
+	if(m_vStrOfNodes[topNodeIndex] == "Items")
+	{
+		if(m_vStrOfNodes[topNodeIndex +1] == "Item")
+		{
+			if(m_vStrOfNodes[topNodeIndex + 2] == "")
+			{
+				m_stripItemsList.push_back(StripItem());
+			}
+		}
+	}
 	return true;
 }
 
 bool CStripLoader::XmlNodeDecode(const std::string& strNodeValue)
 {
-	return false;
+	if(m_stripItemsList.empty())
+	{
+		return false;
+	}
+	const auto currentStripIndex = m_stripItemsList.size() - 1;
+	const S32 topNodeIndex = 0;
+	if(m_vStrOfNodes[topNodeIndex] == "Items")
+	{
+		if(m_vStrOfNodes[topNodeIndex + 1] == "Item")
+		{
+//			m_stripItemsList[currentStripIndex];
+		}
+	}
 }
 

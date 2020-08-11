@@ -305,10 +305,6 @@ set(${PROJECT_NAME}_HEADERS
     GlobalSettings.h
     StableDeclaration.h
     StripItem.h
-    Galaxy/CActionItem.h
-    Galaxy/CBaseFieldItem.h
-    Galaxy/CMouseButtonItem.h
-    Galaxy/CStripItem.h
     Galaxy/CItemInfoGetter.h
 )
 # Add sources to the project
@@ -320,16 +316,13 @@ set(${PROJECT_NAME}_SOURCES
     CWdgScene.cpp
     CWdgSelectionMenu.cpp
     GlobalSettings.cpp
-    Galaxy/CActionItem.cpp
-    Galaxy/CBaseFieldItem.cpp
-    Galaxy/CMouseButtonItem.cpp
-    Galaxy/CStripItem.cpp
     Galaxy/CItemInfoGetter.cpp
 )
 # Add library dependencies
 set(${PROJECT_NAME}_LIBS
     UTools
     USerialization
+    UUserPolicies
 )
 
 # subprojects

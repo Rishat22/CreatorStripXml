@@ -12,6 +12,7 @@ public:
 signals:
 	void addElementToScene(const StripItem& stripItem);
 	void saveData(const std::string& strFileName);
+	void loadData(const std::string& strFileName);
 private slots:
 	void createGraphicsItem();
 private:
@@ -23,6 +24,7 @@ private:
 	QLabel* createDescription(const QString &textDescription);
 	void addCreateItemButton(QBoxLayout* layoutToInsert);
 	void addSaveButton(QBoxLayout* layoutToInsert);
+	void addLoadButton(QBoxLayout* layoutToInsert);
 private:
 	std::map<TypeItemParam, QString> m_itemParams;
 };
