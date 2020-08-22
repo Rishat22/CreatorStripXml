@@ -1,5 +1,4 @@
 #include "CStripLoader.h"
-#include <StripItem.h>
 #include <string>
 
 CStripLoader::CStripLoader()
@@ -7,16 +6,16 @@ CStripLoader::CStripLoader()
 
 }
 
-void CStripLoader::setData(const std::list<StripItem>& stripItemsList)
+void CStripLoader::setData(const std::list<CStripItemConfig>& stripItemsList)
 {
-	m_stripItemsList = stripItemsList;
+	m_stripsConfigList = stripItemsList;
 }
 
-std::list<StripItem> CStripLoader::load(const std::string& strFileName)
+std::list<CStripItemConfig> CStripLoader::load(const std::string& strFileName)
 {
-	m_stripItemsList.clear();
+	m_stripsConfigList.clear();
 	CXmlHandler::Load(strFileName);
-	return std::list<StripItem>();
+	return m_stripsConfigList;
 }
 
 //ToDo need to fix hardcore saving.
@@ -24,52 +23,63 @@ bool CStripLoader::save(const std::string& strFileName)
 {
 	CXmlNode* document = NewDocument(strFileName);
 	CXmlNode* itemsNode = NewNode("Items", document);
-	for(const auto& item : m_stripItemsList)
+	for(const auto& itemConfig : m_stripsConfigList)
 	{
 		CXmlNode* itemNode = NewNode("Item", itemsNode);
-		CXmlNode* itemNameNode = NewNode("Name", itemNode);
-		itemNameNode->SetValue(item.name);
-		saveParams(itemNode, item);
-		saveInteractions(itemNode, item);
+		saveName(itemNode, itemConfig);
+		saveParams(itemNode, itemConfig);
+		saveInteractions(itemNode, itemConfig);
 	}
 	bool bRes = SaveDocument();
 
 	return bRes;
 }
 
-void CStripLoader::saveParams(CXmlNode* parentNode, const StripItem& item)
+void CStripLoader::saveName(CXmlNode* parentNode, const CStripItemConfig& itemConfig)
 {
-	CXmlNode* itemParamsNode = NewNode("Params", parentNode);
-	CXmlNode* itemXNode = NewNode("X", itemParamsNode);
-	itemXNode->SetValue(item.rect.x());
-	CXmlNode* itemYNode = NewNode("Y", itemParamsNode);
-	itemYNode->SetValue(item.rect.y());
-	CXmlNode* itemWNode = NewNode("CustomWidth", itemParamsNode);
-	itemWNode->SetValue(item.rect.width());
-	CXmlNode* itemHNode = NewNode("CustomHeight", itemParamsNode);
-	itemHNode->SetValue(item.rect.height());
+	CXmlNode* itemNameNode = NewNode(itemConfig.Item().GetTag(CBaseItem::Name), parentNode);
+	itemNameNode->SetValue(itemConfig.Item().GetData(CBaseItem::Name));
 }
 
-void CStripLoader::saveInteractions(CXmlNode* parentNode, const StripItem& item)
+void CStripLoader::saveParams(CXmlNode* parentNode, const CStripItemConfig& itemConfig)
+{
+	CXmlNode* itemParamsNode = NewNode("Params", parentNode);
+	for(auto paramIndex = 0; paramIndex < itemConfig.ParamNum(); paramIndex++)
+	{
+		CStripItemParamItem itemParam;
+		if(!itemConfig.GetParamByIndex(paramIndex, itemParam))
+		{
+			continue;
+		}
+		CXmlNode* itemXNode = NewNode(itemParam.GetTag(CBaseItem::Name), itemParamsNode);
+		//	ToDo mb use: itemConfig.S32ValueById()
+		itemXNode->SetValue(itemParam.GetData());
+	}
+}
+
+void CStripLoader::saveInteractions(CXmlNode* parentNode, const CStripItemConfig& itemConfig)
 {
 	CXmlNode* itemInteractionsNode = NewNode("Interactions", parentNode);
-	CXmlNode* triggerNode = NewNode("Trigger", itemInteractionsNode);
-	const auto itemInteraction = item.interaction;
-	triggerNode->SetValue(itemInteraction.trigger);
-	CXmlNode* actionNode = NewNode("Action", itemInteractionsNode);
-	actionNode->SetValue(itemInteraction.action);
+	const auto& interactions = itemConfig.GetCInteractions();
+	for(const auto interaction : interactions.Interactions())
+	{
+		CXmlNode* triggerNode = NewNode(interaction.CTrigger().GetTag(CBaseItem::Name), itemInteractionsNode);
+		triggerNode->SetValue(interaction.CTrigger().GetData());
+		CXmlNode* actionNode = NewNode(interaction.CAction().GetTag(CBaseItem::Name), itemInteractionsNode);
+		actionNode->SetValue(interaction.CAction().GetData());
+	}
 }
 
 bool CStripLoader::XmlNodeBegin(void)
 {
-	const S32 topNodeIndex = 0;
+	const size_t topNodeIndex = 0;
 	if(m_vStrOfNodes[topNodeIndex] == "Items")
 	{
 		if(m_vStrOfNodes[topNodeIndex +1] == "Item")
 		{
 			if(m_vStrOfNodes[topNodeIndex + 2] == "")
 			{
-				m_stripItemsList.push_back(StripItem());
+				m_stripsConfigList.emplace_back();
 			}
 		}
 	}
@@ -78,18 +88,47 @@ bool CStripLoader::XmlNodeBegin(void)
 
 bool CStripLoader::XmlNodeDecode(const std::string& strNodeValue)
 {
-	if(m_stripItemsList.empty())
+	bool bRes = false;
+	if(m_stripsConfigList.empty())
 	{
 		return false;
 	}
-	const auto currentStripIndex = m_stripItemsList.size() - 1;
-	const S32 topNodeIndex = 0;
+	const auto topNodeIndex = 0;
 	if(m_vStrOfNodes[topNodeIndex] == "Items")
 	{
 		if(m_vStrOfNodes[topNodeIndex + 1] == "Item")
 		{
-//			m_stripItemsList[currentStripIndex];
+			if(m_vStrOfNodes[topNodeIndex + 2] == "Interactions")
+			{
+				bRes = m_stripsConfigList.back().GetInteractions().SetData(m_vStrOfNodes[topNodeIndex + 3], strNodeValue);
+			}
+			else if(m_vStrOfNodes[topNodeIndex + 2] == "Params")
+			{
+				if(!m_vStrOfNodes[topNodeIndex + 3].empty())
+				{
+					bRes = m_stripsConfigList.back().AddParam(m_vStrOfNodes[topNodeIndex + 3], strNodeValue);
+					if(!bRes)
+					{
+						printf("Wrong strip item param : %s \n", strNodeValue.data());
+					}
+				}
+			}
+			else
+			{
+				bRes = m_stripsConfigList.back().SetItemData(m_vStrOfNodes[topNodeIndex + 2], strNodeValue);
+				if(!bRes)
+				{
+					printf("Wrong strip item data : %s \n", strNodeValue.data());
+				}
+			}
+//
 		}
 	}
+	if(bRes == false)
+	{
+		printf("Error loading strip configuration. \n");
+		printf("Value = %s \n", strNodeValue.data());
+	}
+	return bRes;
 }
 

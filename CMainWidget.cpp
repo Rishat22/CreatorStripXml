@@ -11,13 +11,14 @@ CMainWidget::CMainWidget(QWidget *parent)
 
 	m_wdgScene = new CWdgScene;
 	mainLayout->addWidget(m_wdgScene);
-	auto wdgSelectionMenu = new CWdgSelectionMenu;
-	mainLayout->addWidget(wdgSelectionMenu);
+	m_wdgSelectionMenu = new CWdgSelectionMenu;
+	mainLayout->addWidget(m_wdgSelectionMenu);
 
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::loadData, this, &CMainWidget::loadData);
-	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
+//	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
+	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::loadData, this, &CMainWidget::loadData);
+//	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
 	setLayout(mainLayout);
+	loadData("/home/userme/Документы/NewFile.xml");
 }
 
 CMainWidget::~CMainWidget()
@@ -31,7 +32,14 @@ void CMainWidget::loadData(const std::string& strFileName)
 		return;
 	}
 	CStripLoader stripLoader;
-	stripLoader.load(strFileName);
+	auto stripItemsConfigs = stripLoader.load(strFileName);
+	if(stripItemsConfigs.empty())
+	{
+		printf("File was not loaded. \n");
+		return;
+	}
+	m_wdgScene->setElementsToScene(stripItemsConfigs);
+	m_wdgSelectionMenu->setStripItemParams(*stripItemsConfigs.begin());
 }
 void CMainWidget::saveData(const std::string& strFileName)
 {
@@ -40,7 +48,7 @@ void CMainWidget::saveData(const std::string& strFileName)
 		return;
 	}
 	CStripLoader stripLoader;
-	stripLoader.setData(std::move(m_wdgScene->GetStripItemsList()));
+	stripLoader.setData(std::move(m_wdgScene->GetStripItemsParams()));
 	stripLoader.save(strFileName);
 }
 

@@ -62,12 +62,13 @@ void CWdgScene::fillMatrixItemPos()
 	}
 }
 
-void CWdgScene::addElementToScene(const StripItem& stripItem)
+void CWdgScene::addElementToScene(const CStripItemConfig& stripItem)
 {
 	const auto centerPoint = getCenterPoint();
 	auto graphicsItem = new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
 												GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red);
-	graphicsItem->setText(QString::fromStdString(stripItem.name));
+	graphicsItem->setText(QString::fromStdString(stripItem.Item().GetData()));
+	//ToDo revert addElementToScene to CStripItemConfig
 	m_stripItems[graphicsItem] = std::move(stripItem);
 	m_scene->addItem(graphicsItem);
 }
@@ -87,19 +88,56 @@ QPoint CWdgScene::getCenterPoint()
 	}
 }
 
-std::list<StripItem> CWdgScene::GetStripItemsList()
+std::list<CStripItemConfig> CWdgScene::GetStripItemsParams()
 {
-	std::list<StripItem> stripItemsList;
+	std::list<CStripItemConfig> stripItemsList;
 	const auto itemStep = GlobalSettings::itemStep();
 	for (auto& relatedItem : m_stripItems)
 	{
-		auto& item = relatedItem.second;
-		item.rect = QRect(relatedItem.first->getRect().x() / itemStep,
-				relatedItem.first->getRect().y() / itemStep,
-				relatedItem.first->getRect().width() / itemStep,
-				relatedItem.first->getRect().height() / itemStep);
-		stripItemsList.push_back(item);
+		auto& itemConfig = relatedItem.second;
+		itemConfig.SetX(relatedItem.first->getRect().x() / itemStep);
+		itemConfig.SetY(relatedItem.first->getRect().y() / itemStep);
+		itemConfig.SetCustomWidth(relatedItem.first->getRect().width() / itemStep);
+		itemConfig.SetCustomHeight(relatedItem.first->getRect().height() / itemStep);
+		stripItemsList.push_back(itemConfig);
 	}
-	stripItemsList.sort();
+	//ToDo need rols to sort
+//	stripItemsList.sort();
 	return stripItemsList;
 }
+
+void CWdgScene::setElementsToScene(std::list<UUserPolicies::CStripItemConfig>& stripItemsConfigs)
+{
+	clearScene();
+	const auto itemStep = GlobalSettings::itemStep();
+	for(auto& stripItemConfig : stripItemsConfigs)
+	{
+		auto itemRect = QRect(
+					stripItemConfig.X() * itemStep,
+					stripItemConfig.Y() * itemStep,
+					stripItemConfig.CustomWidth() * itemStep,
+					stripItemConfig.CustomHeight() * itemStep);
+		auto graphicsItem = new CGraphicsItem(itemRect, Qt::red);
+		graphicsItem->setText(QString::fromStdString(stripItemConfig.Item().GetData()));
+//		m_stripItems[graphicsItem] = std::move(stripItem);
+		m_scene->addItem(graphicsItem);
+	}
+
+}
+
+void CWdgScene::clearScene()
+{
+	m_scene->clear();
+	addGridToScene();
+}
+
+
+
+
+
+
+
+
+
+
+

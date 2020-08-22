@@ -303,9 +303,9 @@ set(${PROJECT_NAME}_HEADERS
     CWdgScene.h
     CWdgSelectionMenu.h
     GlobalSettings.h
-    StableDeclaration.h
-    StripItem.h
     Galaxy/CItemInfoGetter.h
+    StableDeclaration.h
+    StripItemParams.h
 )
 # Add sources to the project
 set(${PROJECT_NAME}_SOURCES
@@ -317,6 +317,7 @@ set(${PROJECT_NAME}_SOURCES
     CWdgSelectionMenu.cpp
     GlobalSettings.cpp
     Galaxy/CItemInfoGetter.cpp
+    StripItemParams.cpp
 )
 # Add library dependencies
 set(${PROJECT_NAME}_LIBS

@@ -7,19 +7,21 @@
 
 class QBrush;
 class QBoxLayout;
-class QHBoxLayout;
-class QGroupBox;
 class QComboBox;
+class QGroupBox;
 class QGraphicsItem;
 class QGraphicsView;
 class QGraphicsScene;
+class QPushButton;
+class QHBoxLayout;
+class QVBoxLayout;
 class QRectF;
 class QPoint;
 class QLabel;
 
 class CGraphicsItem;
+class CWdgSelectionMenu;
 class CWdgScene;
-struct StripItem;
-enum class TypeItemParam;
+struct StripItemParams;
 
 #endif // STABLEDECLARATION_H

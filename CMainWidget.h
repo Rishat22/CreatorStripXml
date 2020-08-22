@@ -21,5 +21,6 @@ private slots:
 	void loadData(const std::string& strFileName);
 private:
 	CWdgScene* m_wdgScene;
+	CWdgSelectionMenu* m_wdgSelectionMenu;
 };
 #endif // CMAINWIDGET_H
