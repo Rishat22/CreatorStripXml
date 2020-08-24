@@ -242,7 +242,6 @@ void CWdgSelectionMenu::setStripItemConfig(const CStripItemConfig& stripItemConf
 	m_paramsWdgMenu->setLayout(paramsMenuLayout);
 	clearLayout(paramsMenuLayout);
 
-	//ToDo mb make an heir from ComboBox and create mathod setCurrentItem(BaseItem item);
 	auto itemNamesLayoutWithBox = createItemNamesComboBox(m_itemConfigs.Item());
 	paramsMenuLayout->addLayout(itemNamesLayoutWithBox);
 
@@ -270,35 +269,4 @@ void CWdgSelectionMenu::clearLayout(QLayout* layout)
 		   if(!item)
 			   delete item;
 	   }
-}
-//ToDo remove method
-bool CWdgSelectionMenu::setDataByType(const TypeItemParam type, const std::string& paramData)
-{
-	bool result = true;
-	switch (type)
-	{
-		case TypeItemParam::Name:
-		{
-			m_itemConfigs.SetItemData(m_itemConfigs.Item().GetTag(CBaseItem::Name), paramData);
-			break;
-		}
-		case TypeItemParam::Action:
-		{
-			auto& interaction =  m_itemConfigs.GetInteractionByIndex(0);
-			interaction.Action().SetData(interaction.Action().GetTag(CBaseItem::Name), paramData);
-			break;
-		}
-		case TypeItemParam::Trigger:
-		{
-			auto& interaction =  m_itemConfigs.GetInteractionByIndex(0);
-			interaction.Trigger().SetData(interaction.Trigger().GetTag(CBaseItem::Name), paramData);
-			break;
-		}
-		default:
-		{
-			result = false;
-			break;
-		}
-	}
-	return result;
 }

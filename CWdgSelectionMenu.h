@@ -50,7 +50,6 @@ private:
 	QPushButton* createSaveButton();
 	QPushButton* createLoadButton();
 	void clearLayout(QLayout *layout);
-	bool setDataByType(const TypeItemParam type, const std::string& paramData);
 private:
 	CStripItemConfig m_itemConfigs;
 	QPushButton* m_saveItemButton;
