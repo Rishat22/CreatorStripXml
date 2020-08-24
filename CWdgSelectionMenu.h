@@ -27,7 +27,9 @@ class CWdgSelectionMenu : public QWidget
 public:
 	CWdgSelectionMenu(QWidget *parent = nullptr);
 signals:
-	void addElementToScene(const CStripItemConfig& stripItem);
+	void addItemToScene(const CStripItemConfig& stripItem);
+	void overwriteItemFromScene(const CStripItemConfig& stripItem);
+	void deleteItemFromScene(const CStripItemConfig& stripItem);
 	void saveData(const std::string& strFileName);
 	void loadData(const std::string& strFileName);
 public slots:

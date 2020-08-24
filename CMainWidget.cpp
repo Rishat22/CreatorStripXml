@@ -14,7 +14,9 @@ CMainWidget::CMainWidget(QWidget *parent)
 	m_wdgSelectionMenu = new CWdgSelectionMenu;
 	mainLayout->addWidget(m_wdgSelectionMenu);
 
-	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
+	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::addItemToScene, m_wdgScene, &CWdgScene::addItemToScene);
+//	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::overwriteItemFromScene, m_wdgScene, &CWdgScene::overwriteItemFromScene);
+	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::deleteItemFromScene, m_wdgScene, &CWdgScene::deleteItemFromScene);
 	connect(m_wdgScene, &CWdgScene::selectedItemConfig, m_wdgSelectionMenu, &CWdgSelectionMenu::setStripItemConfig);
 	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::loadData, this, &CMainWidget::loadData);
 	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);

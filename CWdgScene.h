@@ -41,7 +41,9 @@ public:
 signals:
 	void selectedItemConfig(const CStripItemConfig&);
 public slots:
-	void addElementToScene(const CStripItemConfig& stripItem);
+	void addItemToScene(const CStripItemConfig& stripItem);
+	void overwriteItemFromScene(const CStripItemConfig& stripItem);
+	void deleteItemFromScene(const CStripItemConfig& stripItem);
 private slots:
 	void ItemMouseReleased(CGraphicsItem* graphicsItem);
 private:

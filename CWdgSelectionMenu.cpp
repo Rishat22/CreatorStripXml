@@ -175,7 +175,7 @@ QPushButton* CWdgSelectionMenu::createAddItemButton()
 	auto addItemButton = new QPushButton("Add");
 	connect(addItemButton, &QPushButton::pressed, [=]()
 	{
-		addElementToScene(m_itemConfigs);
+		addItemToScene(m_itemConfigs);
 	});
 	return addItemButton;
 }
@@ -185,7 +185,7 @@ QPushButton* CWdgSelectionMenu::createSaveItemButton()
 	m_saveItemButton = new QPushButton("Save");
 	connect(m_saveItemButton, &QPushButton::pressed, [=]()
 	{
-		addElementToScene(m_itemConfigs);
+		overwriteItemFromScene(m_itemConfigs);
 	});
 	return m_saveItemButton;
 }
@@ -195,7 +195,7 @@ QPushButton* CWdgSelectionMenu::createDeleteItemButton()
 	m_deleteItemButton = new QPushButton("Delete");
 	connect(m_deleteItemButton, &QPushButton::pressed, [=]()
 	{
-		addElementToScene(m_itemConfigs);
+		deleteItemFromScene(m_itemConfigs);
 	});
 	return m_deleteItemButton;
 }

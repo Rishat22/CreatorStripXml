@@ -63,7 +63,7 @@ void CWdgScene::fillMatrixItemPos()
 	}
 }
 
-void CWdgScene::addElementToScene(const CStripItemConfig& stripItem)
+void CWdgScene::addItemToScene(const CStripItemConfig& stripItem)
 {
 	const auto centerPoint = getCenterPoint();
 	auto graphicsItem = new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
@@ -71,6 +71,31 @@ void CWdgScene::addElementToScene(const CStripItemConfig& stripItem)
 	graphicsItem->setText(QString::fromStdString(stripItem.Item().GetData()));
 	m_stripItems[graphicsItem] = std::move(stripItem);
 	m_scene->addItem(graphicsItem);
+}
+
+void CWdgScene::overwriteItemFromScene(const CStripItemConfig& stripItem)
+{
+	for(auto& mapStripItem : m_stripItems)
+	{
+		auto& mapStripItemconfig = mapStripItem.second;
+		if(mapStripItemconfig.Item().Id() == stripItem.Item().Id())
+		{
+			mapStripItemconfig = stripItem;
+		}
+	}
+}
+
+void CWdgScene::deleteItemFromScene(const CStripItemConfig& stripItem)
+{
+	for (auto itStripItem = m_stripItems.begin(); itStripItem != m_stripItems.end(); ++itStripItem)
+	{
+		auto& mapStripItemconfig = itStripItem->second;
+		if(mapStripItemconfig.Item().Id() == stripItem.Item().Id())
+		{
+			m_scene->removeItem(itStripItem->first);
+			m_stripItems.erase(itStripItem);
+		}
+	}
 }
 
 void CWdgScene::ItemMouseReleased(CGraphicsItem* graphicsItem)
