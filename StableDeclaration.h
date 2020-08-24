@@ -22,6 +22,5 @@ class QLabel;
 class CGraphicsItem;
 class CWdgSelectionMenu;
 class CWdgScene;
-struct StripItemParams;
 
 #endif // STABLEDECLARATION_H

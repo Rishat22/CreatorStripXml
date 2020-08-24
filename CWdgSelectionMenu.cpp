@@ -1,7 +1,6 @@
 #include <QPushButton>
 #include <QCompleter>
 #include <QVBoxLayout>
-#include <QComboBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QFileDialog>
@@ -12,33 +11,40 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 	: QWidget(parent),
 	  m_paramsWdgMenu(new QWidget)
 {
-	auto vBoxLayout = new QVBoxLayout;
-
 	auto paramsMenuLayout = new QVBoxLayout;
-	auto itemNamesBoxLayout = createDescription("Select item type:");
-	auto itemNamesBox = createComboBox(TypeItemParam::Name);
-	itemNamesBoxLayout->addWidget(itemNamesBox);
-	connect(itemNamesBox, &QComboBox::editTextChanged,
-			[=](const QString& curValue)
-	{
-		m_itemParams.SetItemData(m_itemParams.Item().GetTag(CBaseItem::Name), curValue.toStdString());
-	});
-	paramsMenuLayout->addLayout(itemNamesBoxLayout);
+	m_paramsWdgMenu->setLayout(paramsMenuLayout);
+
+	paramsMenuLayout->addLayout(createItemNamesComboBox());
 
 	//ToDo get to method
-	auto& interactions = m_itemParams.GetInteractions();
+	auto& interactions = m_itemConfigs.GetInteractions();
 	interactions.AddInteraction(CInteraction());
-	auto& interaction = m_itemParams.GetInteractionByIndex(interactions.Size() - 1);
+	auto& interaction = m_itemConfigs.GetInteractionByIndex(interactions.Size() - 1);
 	paramsMenuLayout->addWidget(createInteractionBox(interaction));
 
-	paramsMenuLayout->addWidget(createItemButton());
-	m_paramsWdgMenu->setLayout(paramsMenuLayout);
+	auto vBoxLayout = new QVBoxLayout;
 	vBoxLayout->addWidget(m_paramsWdgMenu);
+	vBoxLayout->addWidget(createAddInteractionButton());
+	vBoxLayout->addLayout(createItemTools());
 	vBoxLayout->addStretch();
 	vBoxLayout->addWidget(createSaveButton());
 	vBoxLayout->addWidget(createLoadButton());
 
 	setLayout(vBoxLayout);
+}
+
+QLayout* CWdgSelectionMenu::createItemNamesComboBox(const CBaseItem& currentItem)
+{
+	auto itemNamesBoxLayout = createDescription("Select item type:");
+	auto itemNamesBox = createComboBox(TypeItemParam::Name);
+	itemNamesBox->setCurrentItem(currentItem);
+	itemNamesBoxLayout->addWidget(itemNamesBox);
+	connect(itemNamesBox, &CItemComboBox::editTextChanged,
+			[=](const QString& curValue)
+	{
+		m_itemConfigs.SetItemData(m_itemConfigs.Item().GetTag(CBaseItem::Name), curValue.toStdString());
+	});
+	return itemNamesBoxLayout;
 }
 
 QGroupBox* CWdgSelectionMenu::createInteractionBox(CInteraction& interaction)
@@ -48,8 +54,8 @@ QGroupBox* CWdgSelectionMenu::createInteractionBox(CInteraction& interaction)
 
 	auto actionsBoxLayout = createDescription("Select action name:");
 	auto actionsBox = createComboBox(TypeItemParam::Action);
-	actionsBox->setCurrentIndex(interaction.CAction().Id());
-	connect(actionsBox, &QComboBox::editTextChanged,
+	actionsBox->setCurrentItem(interaction.CAction());
+	connect(actionsBox, &CItemComboBox::editTextChanged,
 			[=, &interaction](const QString& curValue)
 	{
 		interaction.Action().SetData(interaction.Action().GetTag(CBaseItem::Name), curValue.toStdString());
@@ -58,8 +64,8 @@ QGroupBox* CWdgSelectionMenu::createInteractionBox(CInteraction& interaction)
 
 	auto triggersBoxLayout = createDescription("Select trigger:");
 	auto triggersBox = createComboBox(TypeItemParam::Trigger);
-	triggersBox->setCurrentIndex(interaction.CTrigger().Id());
-	connect(triggersBox, &QComboBox::editTextChanged,
+	triggersBox->setCurrentItem(interaction.CTrigger());
+	connect(triggersBox, &CItemComboBox::editTextChanged,
 			[=, &interaction](const QString& curValue)
 	{
 		interaction.Action().SetData(interaction.Trigger().GetTag(CBaseItem::Name), curValue.toStdString());
@@ -83,7 +89,7 @@ QLayout* CWdgSelectionMenu::createDescription(const QString& textDescription)
 	return descriptionLayout;
 }
 
-QComboBox* CWdgSelectionMenu::createComboBox(const TypeItemParam typeParam)
+CItemComboBox* CWdgSelectionMenu::createComboBox(const TypeItemParam typeParam)
 {
 	QStringList parameterNamesList = std::move(getListByType(typeParam));
 	auto comboBox = createComboBox(parameterNamesList);
@@ -126,25 +132,72 @@ void CWdgSelectionMenu::fillStringListByVector(QStringList& listToFill, std::vec
 	}
 }
 
-QComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
+CItemComboBox* CWdgSelectionMenu::createComboBox(const QStringList& typeItemsList)
 {
 	QCompleter* completer = new QCompleter(typeItemsList, this);
 	completer->setCaseSensitivity(Qt::CaseInsensitive);
-	auto comboBox = new QComboBox();
+	auto comboBox = new CItemComboBox();
 	comboBox->addItems(typeItemsList);
 	comboBox->setEditable(true);
 	comboBox->setCompleter(completer);
 	return comboBox;
 }
 
-QPushButton* CWdgSelectionMenu::createItemButton()
+QPushButton* CWdgSelectionMenu::createAddInteractionButton()
 {
-	auto createItemButton = new QPushButton("Add Item");
-	connect(createItemButton, &QPushButton::pressed, [=]()
+	auto createAddInteraction = new QPushButton("Add Interaction");
+	connect(createAddInteraction, &QPushButton::pressed, [=]()
 	{
-		addElementToScene(m_itemParams);
+		auto& interactions = m_itemConfigs.GetInteractions();
+		interactions.AddInteraction(CInteraction());
+		auto& interaction = m_itemConfigs.GetInteractionByIndex(m_itemConfigs.GetInteractions().Size() - 1);
+		auto paramsMenuLayout = dynamic_cast<QVBoxLayout*>(m_paramsWdgMenu->layout());
+		paramsMenuLayout->addWidget(createInteractionBox(interaction));
 	});
-	return createItemButton;
+	return createAddInteraction;
+}
+
+QLayout* CWdgSelectionMenu::createItemTools()
+{
+	auto hToolsLayout = new QHBoxLayout();
+	hToolsLayout->addWidget(createAddItemButton());
+	auto saveItemButton = createSaveItemButton();
+	saveItemButton->setDisabled(true);
+	hToolsLayout->addWidget(saveItemButton);
+	auto delteItemButton = createDeleteItemButton();
+	delteItemButton->setDisabled(true);
+	hToolsLayout->addWidget(delteItemButton);
+	return hToolsLayout;
+}
+
+QPushButton* CWdgSelectionMenu::createAddItemButton()
+{
+	auto addItemButton = new QPushButton("Add");
+	connect(addItemButton, &QPushButton::pressed, [=]()
+	{
+		addElementToScene(m_itemConfigs);
+	});
+	return addItemButton;
+}
+
+QPushButton* CWdgSelectionMenu::createSaveItemButton()
+{
+	m_saveItemButton = new QPushButton("Save");
+	connect(m_saveItemButton, &QPushButton::pressed, [=]()
+	{
+		addElementToScene(m_itemConfigs);
+	});
+	return m_saveItemButton;
+}
+
+QPushButton* CWdgSelectionMenu::createDeleteItemButton()
+{
+	m_deleteItemButton = new QPushButton("Delete");
+	connect(m_deleteItemButton, &QPushButton::pressed, [=]()
+	{
+		addElementToScene(m_itemConfigs);
+	});
+	return m_deleteItemButton;
 }
 
 QPushButton* CWdgSelectionMenu::createSaveButton()
@@ -172,25 +225,32 @@ QPushButton* CWdgSelectionMenu::createLoadButton()
 	});
 	return loadItemsButton;
 }
-//ToDo refactoring copy-paste
-void CWdgSelectionMenu::setStripItemParams(CStripItemConfig& stripItemParams)
+
+void CWdgSelectionMenu::setStripItemConfig(const CStripItemConfig& stripItemConfigs)
 {
-	m_itemParams = stripItemParams;
+	if(!stripItemConfigs.isValid())
+	{
+		m_deleteItemButton->setDisabled(true);
+		m_saveItemButton->setDisabled(true);
+		return;
+	}
+	m_itemConfigs = stripItemConfigs;
+	m_deleteItemButton->setEnabled(true);
+	m_saveItemButton->setEnabled(true);
 
 	auto paramsMenuLayout = dynamic_cast<QVBoxLayout*>(m_paramsWdgMenu->layout());
 	m_paramsWdgMenu->setLayout(paramsMenuLayout);
 	clearLayout(paramsMenuLayout);
 
-	auto itemNamesBoxLayout = createDescription("Select item type:");
-	auto itemNamesBox = createComboBox(TypeItemParam::Name);
-	itemNamesBoxLayout->addWidget(itemNamesBox);
-	paramsMenuLayout->addLayout(itemNamesBoxLayout);
-	for(size_t interactionIndex = 0; interactionIndex < m_itemParams.GetInteractions().Size(); interactionIndex++)
+	//ToDo mb make an heir from ComboBox and create mathod setCurrentItem(BaseItem item);
+	auto itemNamesLayoutWithBox = createItemNamesComboBox(m_itemConfigs.Item());
+	paramsMenuLayout->addLayout(itemNamesLayoutWithBox);
+
+	for(size_t interactionIndex = 0; interactionIndex < m_itemConfigs.GetInteractions().Size(); interactionIndex++)
 	{
-		auto& interaction = m_itemParams.GetInteractionByIndex(interactionIndex);
+		auto& interaction = m_itemConfigs.GetInteractionByIndex(interactionIndex);
 		paramsMenuLayout->addWidget(createInteractionBox(interaction));
 	}
-	paramsMenuLayout->addWidget(createItemButton());
 
 	m_paramsWdgMenu->setLayout(paramsMenuLayout);
 }
@@ -211,7 +271,7 @@ void CWdgSelectionMenu::clearLayout(QLayout* layout)
 			   delete item;
 	   }
 }
-
+//ToDo remove method
 bool CWdgSelectionMenu::setDataByType(const TypeItemParam type, const std::string& paramData)
 {
 	bool result = true;
@@ -219,18 +279,18 @@ bool CWdgSelectionMenu::setDataByType(const TypeItemParam type, const std::strin
 	{
 		case TypeItemParam::Name:
 		{
-			m_itemParams.SetItemData(m_itemParams.Item().GetTag(CBaseItem::Name), paramData);
+			m_itemConfigs.SetItemData(m_itemConfigs.Item().GetTag(CBaseItem::Name), paramData);
 			break;
 		}
 		case TypeItemParam::Action:
 		{
-			auto& interaction =  m_itemParams.GetInteractionByIndex(0);
+			auto& interaction =  m_itemConfigs.GetInteractionByIndex(0);
 			interaction.Action().SetData(interaction.Action().GetTag(CBaseItem::Name), paramData);
 			break;
 		}
 		case TypeItemParam::Trigger:
 		{
-			auto& interaction =  m_itemParams.GetInteractionByIndex(0);
+			auto& interaction =  m_itemConfigs.GetInteractionByIndex(0);
 			interaction.Trigger().SetData(interaction.Trigger().GetTag(CBaseItem::Name), paramData);
 			break;
 		}

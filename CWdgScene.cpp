@@ -11,7 +11,8 @@ CWdgScene::CWdgScene(QWidget* parent)
 	QHBoxLayout* hBoxLayout = new QHBoxLayout;
 	m_view = new QGraphicsView();
 	hBoxLayout->addWidget(m_view);
-	m_scene = new QGraphicsScene(this);
+	m_scene = new CStripScene(this);
+	connect(m_scene, &CStripScene::ItemMouseReleased, this, &CWdgScene::ItemMouseReleased);
 	m_scene->setBackgroundBrush(QBrush(Qt::gray));
 	m_view->setScene(m_scene);
 	m_view->setContentsMargins(0, 0, 0, 0);
@@ -68,9 +69,22 @@ void CWdgScene::addElementToScene(const CStripItemConfig& stripItem)
 	auto graphicsItem = new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
 												GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red);
 	graphicsItem->setText(QString::fromStdString(stripItem.Item().GetData()));
-	//ToDo revert addElementToScene to CStripItemConfig
 	m_stripItems[graphicsItem] = std::move(stripItem);
 	m_scene->addItem(graphicsItem);
+}
+
+void CWdgScene::ItemMouseReleased(CGraphicsItem* graphicsItem)
+{
+	if(graphicsItem)
+	{
+		auto itemConfig = *m_stripItems.find(graphicsItem);
+		selectedItemConfig(itemConfig.second);
+	}
+	else
+	{
+		selectedItemConfig(CStripItemConfig());
+	}
+
 }
 
 QPoint CWdgScene::getCenterPoint()
@@ -119,7 +133,7 @@ void CWdgScene::setElementsToScene(std::list<UUserPolicies::CStripItemConfig>& s
 					stripItemConfig.CustomHeight() * itemStep);
 		auto graphicsItem = new CGraphicsItem(itemRect, Qt::red);
 		graphicsItem->setText(QString::fromStdString(stripItemConfig.Item().GetData()));
-//		m_stripItems[graphicsItem] = std::move(stripItem);
+		m_stripItems[graphicsItem] = std::move(stripItemConfig);
 		m_scene->addItem(graphicsItem);
 	}
 

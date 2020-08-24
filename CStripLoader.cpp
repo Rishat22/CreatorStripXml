@@ -18,7 +18,6 @@ std::list<CStripItemConfig> CStripLoader::load(const std::string& strFileName)
 	return m_stripsConfigList;
 }
 
-//ToDo need to fix hardcore saving.
 bool CStripLoader::save(const std::string& strFileName)
 {
 	CXmlNode* document = NewDocument(strFileName);
@@ -43,7 +42,7 @@ void CStripLoader::saveName(CXmlNode* parentNode, const CStripItemConfig& itemCo
 
 void CStripLoader::saveParams(CXmlNode* parentNode, const CStripItemConfig& itemConfig)
 {
-	CXmlNode* itemParamsNode = NewNode("Params", parentNode);
+	CXmlNode* itemConfigNode = NewNode("Params", parentNode);
 	for(auto paramIndex = 0; paramIndex < itemConfig.ParamNum(); paramIndex++)
 	{
 		CStripItemParamItem itemParam;
@@ -51,7 +50,7 @@ void CStripLoader::saveParams(CXmlNode* parentNode, const CStripItemConfig& item
 		{
 			continue;
 		}
-		CXmlNode* itemXNode = NewNode(itemParam.GetTag(CBaseItem::Name), itemParamsNode);
+		CXmlNode* itemXNode = NewNode(itemParam.GetTag(CBaseItem::Name), itemConfigNode);
 		//	ToDo mb use: itemConfig.S32ValueById()
 		itemXNode->SetValue(itemParam.GetData());
 	}

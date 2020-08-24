@@ -14,9 +14,10 @@ CMainWidget::CMainWidget(QWidget *parent)
 	m_wdgSelectionMenu = new CWdgSelectionMenu;
 	mainLayout->addWidget(m_wdgSelectionMenu);
 
-//	connect(wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
+	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::addElementToScene, m_wdgScene, &CWdgScene::addElementToScene);
+	connect(m_wdgScene, &CWdgScene::selectedItemConfig, m_wdgSelectionMenu, &CWdgSelectionMenu::setStripItemConfig);
 	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::loadData, this, &CMainWidget::loadData);
-//	connect(wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
+	connect(m_wdgSelectionMenu, &CWdgSelectionMenu::saveData, this, &CMainWidget::saveData);
 	setLayout(mainLayout);
 	loadData("/home/userme/Документы/NewFile.xml");
 }
@@ -39,7 +40,7 @@ void CMainWidget::loadData(const std::string& strFileName)
 		return;
 	}
 	m_wdgScene->setElementsToScene(stripItemsConfigs);
-	m_wdgSelectionMenu->setStripItemParams(*stripItemsConfigs.begin());
+	m_wdgSelectionMenu->setStripItemConfig(*stripItemsConfigs.begin());
 }
 void CMainWidget::saveData(const std::string& strFileName)
 {
