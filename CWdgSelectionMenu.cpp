@@ -68,7 +68,7 @@ QGroupBox* CWdgSelectionMenu::createInteractionBox(CInteraction& interaction)
 	connect(triggersBox, &CItemComboBox::editTextChanged,
 			[=, &interaction](const QString& curValue)
 	{
-		interaction.Action().SetData(interaction.Trigger().GetTag(CBaseItem::Name), curValue.toStdString());
+		interaction.Trigger().SetData(interaction.Trigger().GetTag(CBaseItem::Name), curValue.toStdString());
 	});
 
 	triggersBoxLayout->addWidget(triggersBox);
