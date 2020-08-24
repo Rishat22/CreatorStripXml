@@ -23,11 +23,11 @@ public:
 signals:
 	void ItemMouseReleased(CGraphicsItem*);
 protected:
-	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 	{
 		CGraphicsItem* pItem = dynamic_cast<CGraphicsItem*>(itemAt(mouseEvent->scenePos(), QTransform()));
 		emit ItemMouseReleased(pItem);
-		QGraphicsScene::mouseReleaseEvent(mouseEvent);
+		QGraphicsScene::mousePressEvent(mouseEvent);
 	}
 };
 
