@@ -1,5 +1,6 @@
 #include <QHBoxLayout>
 #include <CGraphicsItem.h>
+#include <CStripItemConfig.h>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include "GlobalSettings.h"
@@ -11,8 +12,8 @@ CWdgScene::CWdgScene(QWidget* parent)
 	QHBoxLayout* hBoxLayout = new QHBoxLayout;
 	m_view = new QGraphicsView();
 	hBoxLayout->addWidget(m_view);
-	m_scene = new CStripScene(this);
-	connect(m_scene, &CStripScene::ItemMouseReleased, this, &CWdgScene::ItemMouseReleased);
+	m_scene = new CGraphicsScene(this);
+	connect(m_scene, &CGraphicsScene::itemMouseReleased, this, &CWdgScene::itemMouseReleased);
 	m_scene->setBackgroundBrush(QBrush(Qt::gray));
 	m_view->setScene(m_scene);
 	m_view->setContentsMargins(0, 0, 0, 0);
@@ -28,14 +29,15 @@ CWdgScene::CWdgScene(QWidget* parent)
 
 void CWdgScene::addGridToScene()
 {
+	auto& globalSettings = GlobalSettings::get();
 	// Add the vertical lines
-	const auto viewSize = maxItemsSize * GlobalSettings::itemStep();
-	for (size_t posXLine = 0; posXLine <= viewSize; posXLine += GlobalSettings::itemStep())
+	const auto viewSize = globalSettings.maxItemsSize() * globalSettings.itemStep();
+	for (size_t posXLine = 0; posXLine <= viewSize; posXLine += globalSettings.itemStep())
 	{
 		m_scene->addLine(posXLine, 0, posXLine, viewSize, QPen(Qt::black));
 	}
 	// Add the horizontal lines
-	for (size_t posYLine = 0; posYLine <= viewSize; posYLine += GlobalSettings::itemStep())
+	for (size_t posYLine = 0; posYLine <= viewSize; posYLine += globalSettings.itemStep())
 	{
 		m_scene->addLine(0, posYLine, viewSize, posYLine, QPen(Qt::black));
 	}
@@ -44,21 +46,22 @@ void CWdgScene::addGridToScene()
 
 void CWdgScene::fillMatrixItemPos()
 {
-	m_matrixPosOfItem.reserve(maxItemsSize);
+	auto& globalSettings = GlobalSettings::get();
+	m_matrixPosOfItem.reserve(globalSettings.maxItemsSize());
 	auto posYOfItem = 0;
 	auto rowIndex = 0;
 	while(posYOfItem < m_view->sceneRect().width())
 	{
 		auto posXOfItem = 0;
 		std::vector<QPoint> columns;
-		columns.reserve(maxItemsSize);
+		columns.reserve(globalSettings.maxItemsSize());
 		m_matrixPosOfItem.push_back(std::move(columns));
 		while(posXOfItem < m_view->sceneRect().width())
 		{
 			m_matrixPosOfItem[rowIndex].push_back(QPoint(posXOfItem, posYOfItem));
-			posXOfItem += GlobalSettings::itemStep();
+			posXOfItem += globalSettings.itemStep();
 		}
-		posYOfItem += GlobalSettings::itemStep();
+		posYOfItem += globalSettings.itemStep();
 		rowIndex++;
 	}
 }
@@ -67,7 +70,7 @@ void CWdgScene::addItemToScene(const CStripItemConfig& stripItem)
 {
 	const auto centerPoint = getCenterPoint();
 	auto graphicsItem = new CGraphicsItem(QRect(centerPoint.x(), centerPoint.y(),
-												GlobalSettings::itemStep(), GlobalSettings::itemStep()), Qt::red);
+												GlobalSettings::get().itemStep(), GlobalSettings::get().itemStep()), GlobalSettings::get().itemColor());
 	graphicsItem->setText(QString::fromStdString(stripItem.Item().GetData()));
 	m_stripItems[graphicsItem] = std::move(stripItem);
 	m_scene->addItem(graphicsItem);
@@ -98,7 +101,7 @@ void CWdgScene::deleteItemFromScene(const CStripItemConfig& stripItem)
 	}
 }
 
-void CWdgScene::ItemMouseReleased(CGraphicsItem* graphicsItem)
+void CWdgScene::itemMouseReleased(CGraphicsItem* graphicsItem)
 {
 	if(graphicsItem)
 	{
@@ -114,8 +117,8 @@ void CWdgScene::ItemMouseReleased(CGraphicsItem* graphicsItem)
 
 QPoint CWdgScene::getCenterPoint()
 {
-	const auto centerRowIndex = static_cast<size_t>(this->width() / GlobalSettings::itemStep());
-	const auto centerColumnIndex = static_cast<size_t>(this->height() / GlobalSettings::itemStep());
+	const auto centerRowIndex = this->width() / GlobalSettings::get().itemStep();
+	const auto centerColumnIndex = this->height() / GlobalSettings::get().itemStep();
 	try
 	{
 		const auto& centerRow = m_matrixPosOfItem[centerColumnIndex/2];
@@ -130,7 +133,7 @@ QPoint CWdgScene::getCenterPoint()
 std::list<CStripItemConfig> CWdgScene::GetStripItemsParams()
 {
 	std::list<CStripItemConfig> stripItemsList;
-	const auto itemStep = GlobalSettings::itemStep();
+	const auto itemStep = GlobalSettings::get().itemStep();
 	for (auto& relatedItem : m_stripItems)
 	{
 		auto& itemConfig = relatedItem.second;
@@ -147,7 +150,7 @@ std::list<CStripItemConfig> CWdgScene::GetStripItemsParams()
 void CWdgScene::setElementsToScene(std::list<UUserPolicies::CStripItemConfig>& stripItemsConfigs)
 {
 	clearScene();
-	const auto itemStep = GlobalSettings::itemStep();
+	const auto itemStep = GlobalSettings::get().itemStep();
 	for(auto& stripItemConfig : stripItemsConfigs)
 	{
 		auto itemRect = QRect(
@@ -155,7 +158,7 @@ void CWdgScene::setElementsToScene(std::list<UUserPolicies::CStripItemConfig>& s
 					stripItemConfig.Y() * itemStep,
 					stripItemConfig.CustomWidth() * itemStep,
 					stripItemConfig.CustomHeight() * itemStep);
-		auto graphicsItem = new CGraphicsItem(itemRect, Qt::red);
+		auto graphicsItem = new CGraphicsItem(itemRect, GlobalSettings::get().itemColor());
 		graphicsItem->setText(QString::fromStdString(stripItemConfig.Item().GetData()));
 		m_stripItems[graphicsItem] = std::move(stripItemConfig);
 		m_scene->addItem(graphicsItem);
@@ -168,14 +171,3 @@ void CWdgScene::clearScene()
 	m_scene->clear();
 	addGridToScene();
 }
-
-
-
-
-
-
-
-
-
-
-

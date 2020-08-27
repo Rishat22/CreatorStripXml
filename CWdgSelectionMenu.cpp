@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QFileDialog>
 #include <Galaxy/CItemInfoGetter.h>
+#include <CItemComboBox.h>
 #include "CWdgSelectionMenu.h"
 
 CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
@@ -104,17 +105,17 @@ QStringList CWdgSelectionMenu::getListByType(const TypeItemParam typeParam)
 	{
 		case TypeItemParam::Name:
 		{
-			vecParams = itemInfoGetter.getListWithTypeNames();
+			vecParams = std::move(itemInfoGetter.getListWithTypeNames());
 			break;
 		}
 		case TypeItemParam::Action:
 		{
-			vecParams = itemInfoGetter.getListWithActionNames();
+			vecParams = std::move(itemInfoGetter.getListWithActionNames());
 			break;
 		}
 		case TypeItemParam::Trigger:
 		{
-			vecParams = itemInfoGetter.getListWithTriggers();
+			vecParams = std::move(itemInfoGetter.getListWithTriggers());
 			break;
 		}
 		default: break;

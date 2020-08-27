@@ -130,37 +130,39 @@ void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void CGraphicsItem::resizeItem(QGraphicsSceneMouseEvent* event)
 {
+	auto& globalSettings = GlobalSettings::get();
 	if(m_resizeMode == ResizeMode::bottom)
 	{
 		prepareGeometryChange();
 		const auto newHeight = boundingRect().height() + event->scenePos().y() - m_initPos.y();
-		m_itemRect.setHeight(GlobalSettings::modulusOfStep(newHeight));
+		m_itemRect.setHeight(globalSettings.modulusOfStep(newHeight));
 	}
 	else if(m_resizeMode == ResizeMode::right)
 	{
 		prepareGeometryChange();
 		const auto newWidth = boundingRect().width() + event->scenePos().x() - m_initPos.x();
-		m_itemRect.setWidth(GlobalSettings::modulusOfStep(newWidth));
+		m_itemRect.setWidth(globalSettings.modulusOfStep(newWidth));
 	}
 	else if(m_resizeMode == ResizeMode::top)
 	{
 		prepareGeometryChange();
 		const auto newYPos = m_initPos.y() - event->scenePos().y();
-		m_itemRect.setY(m_itemRect.y() - GlobalSettings::modulusOfStep(newYPos));
+		m_itemRect.setY(m_itemRect.y() - globalSettings.modulusOfStep(newYPos));
 	}
 	else if(m_resizeMode == ResizeMode::left)
 	{
 		prepareGeometryChange();
 		const auto newXPos =  m_initPos.x() - event->scenePos().x();
-		m_itemRect.setX(m_itemRect.x() - GlobalSettings::modulusOfStep(newXPos));
+		m_itemRect.setX(m_itemRect.x() - globalSettings.modulusOfStep(newXPos));
 	}
 	setCursor(QCursor(Qt::ArrowCursor));
 }
 
 void CGraphicsItem::moveItem(QGraphicsSceneMouseEvent* event)
 {
-	setPos(GlobalSettings::modulusOfStep(event->scenePos().x()) - GlobalSettings::modulusOfStep(event->pos().x()),
-		   GlobalSettings::modulusOfStep(event->scenePos().y()) - GlobalSettings::modulusOfStep(event->pos().y()));
+	auto& globalSettings = GlobalSettings::get();
+	setPos(globalSettings.modulusOfStep(event->scenePos().x()) - globalSettings.modulusOfStep(event->pos().x()),
+		   globalSettings.modulusOfStep(event->scenePos().y()) - globalSettings.modulusOfStep(event->pos().y()));
 }
 
 void CGraphicsItem::setText(const QString& itemText)

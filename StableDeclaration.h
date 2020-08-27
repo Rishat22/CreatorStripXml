@@ -20,6 +20,7 @@ class QPoint;
 class QLabel;
 
 class CGraphicsItem;
+class CItemComboBox;
 class CWdgSelectionMenu;
 class CWdgScene;
 

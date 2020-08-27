@@ -3,23 +3,9 @@
 
 #include <StableDeclaration.h>
 #include <CStripItemConfig.h>
-#include <QComboBox>
 #include <QWidget>
 
 using namespace UUserPolicies;
-
-class CItemComboBox : public QComboBox
-{
-public:
-	CItemComboBox(QWidget* parent = nullptr) : QComboBox::QComboBox(parent) {}
-	virtual ~CItemComboBox() {}
-	void setCurrentItem(const CBaseItem& stripItem)
-	{
-		auto paramIndex = findText(QString::fromStdString(stripItem.GetData()));
-		setCurrentIndex(paramIndex);
-	}
-
-};
 
 class CWdgSelectionMenu : public QWidget
 {

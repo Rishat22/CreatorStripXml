@@ -299,6 +299,8 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 set(${PROJECT_NAME}_HEADERS
     CMainWidget.h
     CGraphicsItem.h
+    CGraphicsScene.h
+    CItemComboBox.h
     CStripLoader.h
     CWdgScene.h
     CWdgSelectionMenu.h
@@ -311,6 +313,8 @@ set(${PROJECT_NAME}_SOURCES
     main.cpp
     CMainWidget.cpp
     CGraphicsItem.cpp
+    CGraphicsScene.cpp
+    CItemComboBox.cpp
     CStripLoader.cpp
     CWdgScene.cpp
     CWdgSelectionMenu.cpp
