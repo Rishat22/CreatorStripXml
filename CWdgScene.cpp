@@ -140,8 +140,7 @@ std::list<CStripItemConfig> CWdgScene::GetStripItemsParams()
 		itemConfig.SetCustomHeight(relatedItem.first->getRect().height() / itemStep);
 		stripItemsList.push_back(itemConfig);
 	}
-	//ToDo need rols to sort
-//	stripItemsList.sort();
+	stripItemsList.sort();
 	return stripItemsList;
 }
 
