@@ -33,6 +33,7 @@ private:
 	QPushButton* createSaveItemButton();
 	QPushButton* createDeleteItemButton();
 	QPushButton* createAddInteractionButton();
+	void AddInteractionMenu();
 	QPushButton* createSaveButton();
 	QPushButton* createLoadButton();
 	void clearLayout(QLayout *layout);

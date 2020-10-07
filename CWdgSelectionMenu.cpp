@@ -14,14 +14,9 @@ CWdgSelectionMenu::CWdgSelectionMenu(QWidget *parent)
 {
 	auto paramsMenuLayout = new QVBoxLayout;
 	m_paramsWdgMenu->setLayout(paramsMenuLayout);
-
 	paramsMenuLayout->addLayout(createItemNamesComboBox());
 
-	//ToDo get to method
-	auto& interactions = m_itemConfigs.GetInteractions();
-	interactions.AddInteraction(CInteraction());
-	auto& interaction = m_itemConfigs.GetInteractionByIndex(interactions.Size() - 1);
-	paramsMenuLayout->addWidget(createInteractionBox(interaction));
+	AddInteractionMenu();
 
 	auto vBoxLayout = new QVBoxLayout;
 	vBoxLayout->addWidget(m_paramsWdgMenu);
@@ -38,13 +33,13 @@ QLayout* CWdgSelectionMenu::createItemNamesComboBox(const CBaseItem& currentItem
 {
 	auto itemNamesBoxLayout = createDescription("Select item type:");
 	auto itemNamesBox = createComboBox(TypeItemParam::Name);
-	itemNamesBox->setCurrentItem(currentItem);
-	itemNamesBoxLayout->addWidget(itemNamesBox);
 	connect(itemNamesBox, &CItemComboBox::editTextChanged,
 			[=](const QString& curValue)
 	{
 		m_itemConfigs.SetItemData(m_itemConfigs.Item().GetTag(CBaseItem::Name), curValue.toStdString());
 	});
+	itemNamesBox->setCurrentItem(currentItem);
+	itemNamesBoxLayout->addWidget(itemNamesBox);
 	return itemNamesBoxLayout;
 }
 
@@ -55,22 +50,22 @@ QGroupBox* CWdgSelectionMenu::createInteractionBox(CInteraction& interaction)
 
 	auto actionsBoxLayout = createDescription("Select action name:");
 	auto actionsBox = createComboBox(TypeItemParam::Action);
-	actionsBox->setCurrentItem(interaction.CAction());
 	connect(actionsBox, &CItemComboBox::editTextChanged,
 			[=, &interaction](const QString& curValue)
 	{
 		interaction.Action().SetData(interaction.Action().GetTag(CBaseItem::Name), curValue.toStdString());
 	});
+	actionsBox->setCurrentItem(interaction.CAction());
 	actionsBoxLayout->addWidget(actionsBox);
 
 	auto triggersBoxLayout = createDescription("Select trigger:");
 	auto triggersBox = createComboBox(TypeItemParam::Trigger);
-	triggersBox->setCurrentItem(interaction.CTrigger());
 	connect(triggersBox, &CItemComboBox::editTextChanged,
 			[=, &interaction](const QString& curValue)
 	{
 		interaction.Trigger().SetData(interaction.Trigger().GetTag(CBaseItem::Name), curValue.toStdString());
 	});
+	triggersBox->setCurrentItem(interaction.CTrigger());
 
 	triggersBoxLayout->addWidget(triggersBox);
 
@@ -149,13 +144,18 @@ QPushButton* CWdgSelectionMenu::createAddInteractionButton()
 	auto createAddInteraction = new QPushButton("Add Interaction");
 	connect(createAddInteraction, &QPushButton::pressed, [=]()
 	{
-		auto& interactions = m_itemConfigs.GetInteractions();
-		interactions.AddInteraction(CInteraction());
-		auto& interaction = m_itemConfigs.GetInteractionByIndex(m_itemConfigs.GetInteractions().Size() - 1);
-		auto paramsMenuLayout = dynamic_cast<QVBoxLayout*>(m_paramsWdgMenu->layout());
-		paramsMenuLayout->addWidget(createInteractionBox(interaction));
+		AddInteractionMenu();
 	});
 	return createAddInteraction;
+}
+
+void CWdgSelectionMenu::AddInteractionMenu()
+{
+	auto& interactions = m_itemConfigs.GetInteractions();
+	interactions.AddInteraction(CInteraction());
+	auto& interaction = m_itemConfigs.GetInteractionByIndex(interactions.Size() - 1);
+	auto paramsMenuLayout = dynamic_cast<QVBoxLayout*>(m_paramsWdgMenu->layout());
+	paramsMenuLayout->addWidget(createInteractionBox(interaction));
 }
 
 QLayout* CWdgSelectionMenu::createItemTools()
